@@ -20,21 +20,31 @@
 
 `git commit`: Engade os ficheiros da _staging area_ ao repositorio local. Necesita `-m` para agregar descripción. Con `-am` engade todos os ficheiros modificados ou borrados pero non os pendentes de seguir. Con `--amend` abre a edición do último commit.
 
-`git status`. Monitorea o estado de seguemento dos ficheiros. Con `-s` lista ficheiroes e directorios.
+`git tag [name] -m "[description]"`. Especifica a versión do proxecto usando una tag. Para actualizala en remoto hai que facer un `git push --tags`.
 
 `git reset --hard`. Restaura a un estado anterior.
 
-`git tag [name] -m "[description]"`Especifica a versión do proxecto usando una tag. 
+`git status`. Monitorea o estado de seguemento dos ficheiros. Con `-s` lista ficheiroes e directorios.
 
 ## Branching e merging
 
+`git branch`. Mostra as branches existentes e a actual.
+
+`git branch [name]`. Crea unha branch.
+
+`git checkout [name]`. Cambia á branch seleccionada.
+
+`git merge [name]`. Une a branch seleccionada coa master.
+
 ## Sharing and updating projects
 
-`git remote add origin [url]`. Vincula un repositorio cun repositorio remoto.
+`git clone [url]`. Clona un respositorio.
 
 `git push [branch]`. Actualiza o repositorio remoto cos cambios comiteados. Se non está configurada a branch hai que especificala, por exemplo `git push origin master`.
 
-`git pull`. Actualiza o repositorio local cos cambios comiteados no remoto. Se non está configurada a branch hai que especificala, por exemplo `git pull origin master`.
+`git pull [branch]`. Actualiza o repositorio local cos cambios comiteados no remoto. Se non está configurada a branch hai que especificala, por exemplo `git pull origin master`.
+
+`git remote add origin [url]`. Vincula un repositorio cun repositorio remoto.
 
 ## Inspection and comparison
 
