@@ -34,6 +34,8 @@
 
 `git checkout [name]`. Cambia á branch seleccionada.
 
+`git merge [name]`. Une a branch seleccionada coa master.
+
 ## Sharing and updating projects
 
 `git clone [url]`. Clona un respositorio.
