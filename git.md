@@ -32,11 +32,9 @@
 
 `git remote add origin [url]`. Vincula un repositorio cun repositorio remoto.
 
-`git push [branch]`. Actualiza o repositorio remoto cos cambios comiteados.
+`git push [branch]`. Actualiza o repositorio remoto cos cambios comiteados. Se non está configurada a branch hai que especificala, por exemplo `git push origin master`.
 
 `git pull`. Actualiza o repositorio local cos cambios comiteados no remoto. Se non está configurada a branch hai que especificala, por exemplo `git pull origin master`.
-
-
 
 ## Inspection and comparison
 
