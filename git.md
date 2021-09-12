@@ -24,13 +24,19 @@
 
 `git reset --hard`. Restaura a un estado anterior.
 
+`git tag [name] -m "[description]"`Especifica a versión do proxecto usando una tag. 
+
 ## Branching e merging
 
 ## Sharing and updating projects
 
 `git remote add origin [url]`. Vincula un repositorio cun repositorio remoto.
+
 `git push [branch]`. Actualiza o repositorio remoto cos cambios comiteados.
-`git pull`. Actualiza o repositorio local cos cambios comiteados no remoto.
+
+`git pull`. Actualiza o repositorio local cos cambios comiteados no remoto. Se non está configurada a branch hai que especificala, por exemplo `git pull origin master`.
+
+
 
 ## Inspection and comparison
 
