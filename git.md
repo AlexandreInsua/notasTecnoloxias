@@ -40,7 +40,7 @@
 
 `git clone [url]`. Clona un respositorio.
 
-`git push [branch]`. Actualiza o repositorio remoto cos cambios comiteados.
+`git push [remote] [branch]`. Actualiza o repositorio remoto cos cambios comiteados. Con `-u` , por exemplo `git push -u origin master`
 
 `git pull [branch]`. Actualiza o repositorio local cos cambios comiteados no remoto. Se non está configurada a branch hai que especificala, por exemplo `git pull origin master`.
 
