@@ -4,6 +4,10 @@
 
 **Git** é unha ferramenta para o control de versións, que permite facer o seguemento de cambios nun proxecto rexistrando cada cambio en _commits_. O sistema traballa con tres estados para cada ficheiro monitorizado (_track_): a _working area_, a _staging area_ e o _repository_.
 
+En xeral trabállase con unha branch principal, estable, e outras de desenvolvemento. Posteriormente, vanse fusionando as branches de desenvolvemento coa principal. Git incorpora os cambios dunha branch noutra se non hai conflitos. En caso de habelos é posible que haxa que resolvelos manualmente.
+
+Cando se produce un conflito git pinta no ficheiro o texto conflitivo nas branches. Hai que escoller entre ambos e comitear os cambios.
+
 **HEAD** é o commit actual.
 
 Cando se fai un **pull** traballa con correspondencia entre as branch local e remota, non sube todo o repositorio.
@@ -69,4 +73,4 @@ En Linux da familia Debian, `apt-get install git`.
 
 ## Inspection and comparison
 
-`git log`. Listado de commits. Co parámetro `--oneline` mostra unha lista simplificada co commit. Con `--graph` pinta unha representación gráfica das branches
+`git log`. Listado de commits. Co parámetro `--oneline` mostra unha lista simplificada co commit. Con `--graph` pinta unha representación gráfica das branches. Con `--all` mostra todos dos commits.
