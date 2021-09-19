@@ -120,3 +120,4 @@ por exemplo:
 mysqldump -uroot -p --where="id between 204854 and 204860" modx_apvigo ap_puerto_arribos > C:/Users/ainsua/Documents/dumps/arribos.sql
 
 ```
+
