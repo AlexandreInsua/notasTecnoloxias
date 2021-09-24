@@ -45,11 +45,15 @@ En Linux da familia Debian, `apt-get install git`.
 
 `git diff [hash] [hash]`. Lista de modificacións que non están incluídas na _staging area_ ou entre varios commit.
 
-`git tag [name] -m "[description]" ?[hash]`. Especifica a versión do proxecto usando una tag. Para actualizala en remoto hai que facer un `git push --tags`. Se engadimos o hash dun commit, quedan asociados
+`git tag [name] -m "[description]" ?[hash]`. Especifica a versión do proxecto usando una tag. Para actualizala en remoto hai que facer un `git push --tags`. Se engadimos o hash dun commit, quedan asociados. `-d` elimina un tag. `-a` anota a versión.
 
 `git reset [hash]`. Elimina o último commit ou un especificado (hai que usalo con precaución para evitar conflitos). Deixa os cambios na _working_ Con `--hard` elimina os cambios de _working_ e _staging_ con `--soft` elimina o commit pero non os cambios.
 
 `git revert [hash] `. Revirte os cambios dun commit. Con `-n` non comitea a reversión.
+
+`git show `. Mostra a informacion sobre o que pida.
+
+`git stash`. Garda os cambios e os oculta. `list` lista os stash apillados. `apply` aplica o último stash. `drop` borra o último stash.
 
 `git status`. Monitorea o estado de seguemento dos ficheiros. Con `-s` lista ficheiroes e directorios.
 
