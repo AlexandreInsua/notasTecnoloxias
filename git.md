@@ -27,9 +27,15 @@ En Linux da familia Debian, `apt-get install git`.
 
 `git config --list`. Mostra a configuración local.
 
+`git config --global alias.[alias] '[comando]`. Crea un alias para un comando.
+
+`git config --global --get-regex alias`. Mostra os alias creados.
+
+`git config --global --unset alias.[alias]`. Elimina un alias.
+
 ## Creación de repositorio
 
-`git init`. Inicializa un repositorio.
+`git init`. Inicializa ou reinicializa un repositorio.
 
 ## Comandos básicos
 
@@ -59,7 +65,7 @@ En Linux da familia Debian, `apt-get install git`.
 
 `git checkout [name]`. Cambia á branch seleccionada. Con `-b` crea a branch e se move a ela.
 
-`git merge [name]`. Une a branch seleccionada coa master.
+`git merge [name]`. Une a branch seleccionada coa master. `--abort` aborta a merge.
 
 ## Sharing and updating projects
 
