@@ -75,11 +75,13 @@ En Linux da familia Debian, `apt-get install git`.
 
 `git clone [url] ?[directory]`. Clona un respositorio. Pódese engadir o diretorio de destino.git
 
-`git push [remote] [branch]`. Actualiza o repositorio remoto cos cambios comiteados. Con `-u` , por exemplo `git push -u origin master`
+`git fetch [remote]`. Verifica se hais cambios e os descarga do remto remoto.
 
-`git pull [branch]`. Actualiza o repositorio local cos cambios comiteados no remoto. Se non está configurada a branch hai que especificala, por exemplo `git pull origin master`. 
+`git push [remote] [branch]`. Actualiza o repositorio remoto cos cambios comiteados. Con `-u` , por exemplo `git push -u origin master`. Con `--al` sube todas branchs.
 
-`git remote add origin [url]`. Vincula un repositorio cun repositorio remoto.
+`git pull [branch]`. Actualiza o repositorio local cos cambios comiteados no remoto. Admite o parámetro `--rebase` ordenandoos os commits cronoloxicamente. Permite aplanar commits en local antes de seren pusheados. Rescribe o historial e é bastante interactivo. Se non está configurada a branch hai que especificala, por exemplo `git pull origin master`. 
+
+`git remote add [name] [url]`. Vincula un repositorio cun repositorio remoto. Normalmente o nome é remote. 
 
 ## Inspection and comparison
 
