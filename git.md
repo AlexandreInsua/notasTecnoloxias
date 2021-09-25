@@ -47,7 +47,7 @@ En Linux da familia Debian, `apt-get install git`.
 
 `git apply`. Permanece á escoita do que metemos por teclado, como se for unha consola.
 
-`git commit`. Engade os ficheiros da _staging area_ ao repositorio local. Necesita `-m` para agregar descripción. Con `-am` engade todos os ficheiros modificados ou borrados pero non os pendentes de seguir. Con `--amend` abre a edición do último commit.
+`git commit`. Engade os ficheiros da _staging area_ ao repositorio local. Necesita `-m` para agregar descripción. Con `-am` engade todos os ficheiros modificados ou borrados pero non os pendentes de seguir. Con `--amend` abre a edición do último commit. Con `-S` permite asinar o commit.
 
 `git diff [hash] [hash]`. Lista de modificacións que non están incluídas na _staging area_ ou entre varios commit. Podese gardar  a súa saída nun ficheiro .patch para estudar os cambios.
 
@@ -98,3 +98,7 @@ En Linux da familia Debian, `apt-get install git`.
 ## Inspection and comparison
 
 `git log`. Listado de commits. Co parámetro `--oneline` mostra unha lista simplificada co commit. Con `--graph` pinta unha representación gráfica das branches. Con `--all` mostra todos dos commits.
+
+## Conventional commits
+
+É unha convención para escribir commits con relevancia comunicativa. Ao principio de cada commit vai a palabra clave (fix, feat, refactor, test, release, docs, chore), o _scope_, a descrición, o corpo e o rodapé. A referencia completa está en [Conventional commits](https://www.conventionalcommits.org/).
