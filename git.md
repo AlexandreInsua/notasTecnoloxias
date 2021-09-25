@@ -8,9 +8,11 @@ En xeral trabállase con unha branch principal, estable, e outras de desenvolvem
 
 Cando se produce un conflito git pinta no ficheiro o texto conflitivo nas branches. Hai que escoller entre ambos e comitear os cambios.
 
+Os repositorios git teñen un ficheiro `gitignore` que lle indican a git ficheiros que debe ignorar. Normalmente son ficheiros de credenciais, ficheiros compilados, temporais ou de dependencias. Cada unha das súas liñas son as rutas dos ficheiros
+
 **HEAD** é o commit actual.
 
-Cando se fai un **pull** traballa con correspondencia entre as branch local e remota, non sube todo o repositorio.
+Os comandos adminten un parámetro `-h` que pinta o manual do comando.
 
 ## Instalación
 
@@ -29,6 +31,8 @@ En Linux da familia Debian, `apt-get install git`.
 
 `git config --global alias.[alias] '[comando]`. Crea un alias para un comando.
 
+`git config --global init.defaultBranch [name]`. Establece o nome da branch principal por defto.
+
 `git config --global --get-regex alias`. Mostra os alias creados.
 
 `git config --global --unset alias.[alias]`. Elimina un alias.
@@ -39,11 +43,13 @@ En Linux da familia Debian, `apt-get install git`.
 
 ## Comandos básicos
 
-`git add`. Engade ficheiros á _staging area_. Con `.` engage todos. Marcado de ficheiros A: agregated, M: modified, U: untracked
+`git add`. Engade ficheiros á _staging area_. Con `.` engage todos. Con `-p` ou `--patch` permite seleccionar os cambios que se van engadir, pero non aplica a ficheiros novos. Marcado de ficheiros A: agregated, M: modified, U: untracked.
 
-`git commit`: Engade os ficheiros da _staging area_ ao repositorio local. Necesita `-m` para agregar descripción. Con `-am` engade todos os ficheiros modificados ou borrados pero non os pendentes de seguir. Con `--amend` abre a edición do último commit.
+`git apply`. Permanece á escoita do que metemos por teclado, como se for unha consola.
 
-`git diff [hash] [hash]`. Lista de modificacións que non están incluídas na _staging area_ ou entre varios commit.
+`git commit`. Engade os ficheiros da _staging area_ ao repositorio local. Necesita `-m` para agregar descripción. Con `-am` engade todos os ficheiros modificados ou borrados pero non os pendentes de seguir. Con `--amend` abre a edición do último commit.
+
+`git diff [hash] [hash]`. Lista de modificacións que non están incluídas na _staging area_ ou entre varios commit. Podese gardar  a súa saída nun ficheiro .patch para estudar os cambios.
 
 `git tag [name] -m "[description]" ?[hash]`. Especifica a versión do proxecto usando una tag. Para actualizala en remoto hai que facer un `git push --tags`. Se engadimos o hash dun commit, quedan asociados. `-d` elimina un tag. `-a` anota a versión.
 
@@ -61,7 +67,7 @@ En Linux da familia Debian, `apt-get install git`.
 
 `git branch`. Mostra as branches existentes e sinala a actual.
 
-`git branch [name]`. Crea unha branch. Con `-D` borra a branch. Cada feature debe ter a súa branch. Con `-m` modifica o nome dunha branch.
+`git branch [name]`. Crea unha branch. Con `-D` borra a branch. Cada feature debe ter a súa branch. Con `-m` modifica o nome dunha branch. Con `-a` mostra as branches remotas.
 
 `git checkout -- [file name]`. Desfai unha modificación pendente de agregar ao _staging_.
 
@@ -69,7 +75,13 @@ En Linux da familia Debian, `apt-get install git`.
 
 `git checkout [name]`. Cambia á branch seleccionada. Con `-b` crea a branch e se move a ela.
 
-`git merge [name]`. Une a branch seleccionada coa master. `--abort` aborta a merge.
+`git grep [code]`. Busca código. Está baseado no comando `grep` dos sistemas unix. 
+
+`git merge [name] *[name]`. Une a branch seleccionada coa master. `--abort` aborta a merge. Se non vai a haber conflitos pódese aplicar a estratexia **octopus** para facer un merge de varias branches ao mesmo tempo.
+
+`git restore [name]`. Desfai os cambios nun ficheiro no _working_. Con `--staged` move o ficheiro do _stagint_ ao _working_. Con `--staged --worktree` desfai os cambios de todos os lados.
+
+`git switch [name]`. Cambia de branch. Con `-c` móvese á branch creada. Con `--orphan` crea unha branch en branco (útil para branches de documentación). 
 
 ## Sharing and updating projects
 
@@ -77,7 +89,7 @@ En Linux da familia Debian, `apt-get install git`.
 
 `git fetch [remote]`. Verifica se hais cambios e os descarga do remto remoto.
 
-`git push [remote] [branch]`. Actualiza o repositorio remoto cos cambios comiteados. Con `-u` , por exemplo `git push -u origin master`. Con `--al` sube todas branchs.
+`git push [remote] [branch]`. Actualiza o repositorio remoto cos cambios comiteados. Con `-u` , por exemplo `git push -u origin master`. Cando se fai un **push** traballa con correspondencia entre as branch local e remota, non sube todo o repositorio. Con `--all` sube todas branchs.
 
 `git pull [branch]`. Actualiza o repositorio local cos cambios comiteados no remoto. Admite o parámetro `--rebase` ordenandoos os commits cronoloxicamente. Permite aplanar commits en local antes de seren pusheados. Rescribe o historial e é bastante interactivo. Se non está configurada a branch hai que especificala, por exemplo `git pull origin master`. 
 
