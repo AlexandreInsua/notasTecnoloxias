@@ -113,8 +113,15 @@ En Linux da familia Debian, `apt-get install git`.
 
 É unha convención para escribir commits con relevancia comunicativa. Ao principio de cada commit vai a palabra clave (fix, feat, refactor, test, release, docs, chore), o _scope_, a descrición, o corpo e o rodapé. A referencia completa está en [Conventional commits](https://www.conventionalcommits.org/).
 
+## Submódulos
+
+Un submódulo consiste en importar un repositorio dentro de outra, como pode ser unha librería ou unha funcionalidade. En lugar de `git clone` úsase `git submodule` e conserva as mesmas funcionalidades que un repositorio, polo que se pode actualizar cun **pull**. Para que funcione un submódulo hai que descargalo, rexistralo e clonalo.
+ * `git submodule add [url] [path]`. Por convención este código de terceiros gárdase no directorio `vendor`. O repositorio crea un ficheiro `.gitmudules` con metadatos e crea cada submodulo como un ficheiro de metadatos.
+ * `git submodule init`. Rexistra un submódulo.
+ * `git submodule update --remote`. Clona ou actualiza o submódulo. Con `--recursive` actualiza todos os submódulos.
+ * `git pull --recurse-submoules`. Fai o mesmo que anterior.
+
 ## References
 
-[Documentación oficial](https://git-scm.com/)
-
+[Documentación oficial](https://git-scm.com/),
 [Curso en makigas](https://www.youtube.com/watch?v=jSJ8xhKtfP4&list=PLTd5ehIj0goMCnj6V5NdzSIHBgrIXckGU)
