@@ -12,7 +12,11 @@ Os repositorios git teñen un ficheiro `gitignore` que lle indican a git ficheir
 
 **HEAD** é o commit actual.
 
+Para obter o enésimo commit anterior a un dado úsase o til: `[hash]~n`.
+
 Os comandos adminten un parámetro `-h` que pinta o manual do comando.
+
+As páxinas git diferencian varias estratexias de merge. **Merge commit** é aquela que crea un commit para a merge (a estándar). **Merge rebase** fai un rebase, de forma que os commits da branch mergeada quedarán por riba dos anteriores. **Merge squash** implica que todo o diff (con diferentes commits) pasa a ser un único commit.
 
 ## Instalación
 
@@ -55,7 +59,7 @@ En Linux da familia Debian, `apt-get install git`.
 
 `git revert [hash] `. Revirte os cambios dun commit. Con `-n` non comitea a reversión.
 
-`git show `. Mostra a informacion sobre o que pida.
+`git show `. Mostra a informacion sobre o que pida, por exempolo un commit `git show [hash]`.
 
 `git stash`. Garda os cambios e os oculta. `list` lista os stash apillados. `apply` aplica o último stash. `drop` borra o último stash.
 
@@ -77,11 +81,11 @@ En Linux da familia Debian, `apt-get install git`.
 
 `git grep [code]`. Busca código. Está baseado no comando `grep` dos sistemas unix. 
 
-`git merge [name] *[name]`. Une a branch seleccionada coa master. `--abort` aborta a merge. Se non vai a haber conflitos pódese aplicar a estratexia **octopus** para facer un merge de varias branches ao mesmo tempo.
+`git merge [name] *[name]`. Une a branch seleccionada coa master. `--abort` aborta a merge. Se non vai a haber conflitos pódese aplicar a estratexia **octopus** para facer un merge de varias branches ao mesmo tempo. Con `--squash` sintetiza os cambios mergeados nun único commit, que debe ser feito manualmente.
 
 `git restore [name]`. Desfai os cambios nun ficheiro no _working_. Con `--staged` move o ficheiro do _stagint_ ao _working_. Con `--staged --worktree` desfai os cambios de todos os lados.
 
-`git switch [name]`. Cambia de branch. Con `-c` móvese á branch creada. Con `--orphan` crea unha branch en branco (útil para branches de documentación). 
+`git switch [name]`. Cambia de branch. Con `-c` móvese á branch creada. Con `-D` resetea a branch.  Con `--orphan` crea unha branch en branco (útil para branches de documentación). 
 
 ## Sharing and updating projects
 
@@ -97,8 +101,20 @@ En Linux da familia Debian, `apt-get install git`.
 
 ## Inspection and comparison
 
+`git bisect`. Percorre os commits e permite descargar aqueles que provocan un erro. Hai que iniciar unha sesión de "bisección" con `git bisect start` e péchase con `git bisect reset`.  Os commits márcanse con `git bisect bad` e `git bisect good [hash]` respectivamente. 
+
+`git blame [path] | [hash]`. Identifica quen e cando realizou un cambio. 
+
 `git log`. Listado de commits. Co parámetro `--oneline` mostra unha lista simplificada co commit. Con `--graph` pinta unha representación gráfica das branches. Con `--all` mostra todos dos commits.
+
+`get reflog`. Alias para git log. Mostra un log das referencias do HEAD.
 
 ## Conventional commits
 
 É unha convención para escribir commits con relevancia comunicativa. Ao principio de cada commit vai a palabra clave (fix, feat, refactor, test, release, docs, chore), o _scope_, a descrición, o corpo e o rodapé. A referencia completa está en [Conventional commits](https://www.conventionalcommits.org/).
+
+## References
+
+[Documentación oficial](https://git-scm.com/)
+
+[Curso en makigas](https://www.youtube.com/watch?v=jSJ8xhKtfP4&list=PLTd5ehIj0goMCnj6V5NdzSIHBgrIXckGU)
