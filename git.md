@@ -55,7 +55,7 @@ En Linux da familia Debian, `apt-get install git`.
 
 `git diff [hash] [hash]`. Lista de modificacións que non están incluídas na _staging area_ ou entre varios commit. Podese gardar  a súa saída nun ficheiro .patch para estudar os cambios.
 
-`git reset [hash]`. Elimina o último commit ou un especificado (hai que usalo con precaución para evitar conflitos). Deixa os cambios na _working_ Con `--hard` elimina os cambios de _working_ e _staging_ con `--soft` elimina o commit pero non os cambios.
+`git reset [hash]`. Elimina o último commit ou un especificado (hai que usalo con precaución para evitar conflitos). Se non se especifica un commit, revirte o último _add_ Deixa os cambios na _working_ Con `--hard` elimina os cambios de _working_ e _staging_ con `--soft` elimina o commit pero non os cambios.
 
 `git revert [hash] `. Revirte os cambios dun commit. Con `-n` non comitea a reversión.
 
