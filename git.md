@@ -105,7 +105,7 @@ En Linux da familia Debian, `apt-get install git`.
 
 `git blame [path] | [hash]`. Identifica quen e cando realizou un cambio. 
 
-`git log`. Listado de commits. Co parámetro `--oneline` mostra unha lista simplificada co commit. Con `--graph` pinta unha representación gráfica das branches. Con `--all` mostra todos dos commits.
+`git log`. Listado de commits. Co parámetro `--oneline` mostra unha lista simplificada co commit. Con `--graph` pinta unha representación gráfica das branches. Con `--all` mostra os commits de todas as branches.  Con `-[number]` limita o número de post mostrados. Con `-p` ou `--patch` mostra as diferenzas entre os commits.
 
 `get reflog`. Alias para git log. Mostra un log das referencias do HEAD.
 
