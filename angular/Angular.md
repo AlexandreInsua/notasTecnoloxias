@@ -1,3 +1,17 @@
+# ANGULAR
+
+## Introdución
+
+Angular é unha plataforma de desenvolvemento (ou framework de frontend) construído en [Typescript](https://www.typescriptlang.org/). Angular estrutúrase en **components** (ficheiros typescript .ts) e **templates** (ficheiros html).
+Un **component** e un bloque de codigo ts que inclúe unha clase e o decorador `@Component()` que especicifica un selector, un template e opcionalmente unha folla css.
+Unha  **template** inclúe codigo html, variables interpoladas (interpolation con `{{variable}}`), e vencelladas (property bindind con `[property]="value`), eventos vingulados (event binding con `(event)="funcion()"`), e directivas.
+Angular funciona mercé ao principio de **inxección de dependencias** en virtude da cal se declaran esas dependencias correndo a súa instanciación por conta da plataforma.
+**Angular cli** é unha interface de liña de comamndos propia que permite realizar múltiples accións.
+Angular fornece de varias librerías propias como son: o Router, Forms, HttpClient, Animations, PWA, Schematics.
+
+
+
+
 INSTALAR ANGULAR
 	npm install -g @angular/cli
 
