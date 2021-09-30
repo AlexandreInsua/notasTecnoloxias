@@ -9,61 +9,76 @@ Angular funciona mercé ao principio de **inxección de dependencias** en virtud
 **Angular cli** é unha interface de liña de comamndos propia que permite realizar múltiples accións.
 Angular fornece de varias librerías propias como son: o Router, Forms, HttpClient, Animations, PWA, Schematics.
 
+## Angular cli
 
+A interface de liña de comandos de Angular é unha ferramento que se empreggra para iniciar, levantar a estrutura básica, desenvolver e manter aplicaicón Angular desde a liña de comandos.
 
+### Instalar Angular
 
-INSTALAR ANGULAR
-	npm install -g @angular/cli
+Para a instalación, córrese o seguinte comando
+- `npm install -g @angular/cli`. 
 
+### Fluxo de traballo básico
 
-INICIAR UN PROXECTO
-	mkdir projectDirectory
-	cd projectDirectory
+O fluxo de traballo básico consiste en ir crear un proxecto e levantalo nun servidor;
 
-COMANDOS DE ANGULAR CLI (command line interface)
-	ng help				// Obviamente, axuda
-	ng doc 				// lanza API de angular
-	ng --version 		// versión de angular, node, SO e compoñentes de angular
-	ng -v 
-	ng serve			// arrinar a app
-		--port=000		// establecer port
-		--host			// establece host
-		--check-host=disabled
-						// deshabilita comprobación de porto
-	ng install 			// instala unha app (descarga node modules se é necesario)
+1. `ng new [project name]`. Crea un novo proxecto nun directorio co mesmo nome. O nome de proxecto debe ser válido como nome de directorio. O proxecto está formado polos seguintes elementos:
+    - `.browserslistrc`. Configuración de navegadores soportados.
+	- `.editorconfig`. Configuración do editor de código.
+    - `.gitignore`. Ficheiro para ficheiros sen seguemento.
+    - `README.md`. Ficheiro de documentación.
+    - `angular.json`. Configuración de build, server, e testing.
+    - `package.json`. Configuración de dependencias de npm.
+    - `package-lock.json`. Información das versións de `node_modules/`
+    - `src/`. Directorio de código fonte. Contén os seguites elementos:
+		- `app/`. Contén os ficheiros das compoñentes da aplicación.
+		- `assets`. Contén ficheiros estáticos como imaxes e outros.
+		- `enviroment`. Contén a configuración para un entorno. En xeral dev e pro.
+		- `favicon.ico`.
+		- `index.html`. Punto de entrada da app. Chama os js compilados que se xeran no `build`.
+		- `polyfills.ts`. Fornece os scripts de polyfill para soporte de navegadores.
+		- `styles.css`. Folla de stilos globais.
+		- `test.ts`. Punto de entrada para os test unitarios.
+    - `node_modules/`. Paques de npm.
+    - `tsconfig.json`. Configuracón de typescript.
+    - `tslint.json`. Configuración de linter.
+2. `cd [project name]`. Cámbiase ao directorio do proxecto.
+3. `ng serve`. Levántase un servidor.
 
-	ng build			// compila o proxecto no directorio /dist
-		--prod	//
-		--dev 			// compila entorno desenvolvemento
-		--base-href ./	// modifica a base de link da web para deploy en host
-		--bh ./
-		--output-hashing none // quitar numero de hash nos ficheiros js 
-		--output-path	// ruta de compilación, por defecto /dist
-		--aot 			//
+### Estrutura básica de compoñentes
 
+Dentro do directorio `src/app/` encóntrase a lóxica da app. Por defecto créase o compoñente principal da app que ten os seguintes ficheiros (o resto de compoñentes seguen a mesma estrutura):
+- `app.component.ts`. Lóxica para o compoñente.
+- `app.component.html`. Template html do compoñente.
+- `app.component.css`. Folla de estilos asociada.
+- `app.component.spec.ts`.  Test unitarios.
+- `app.module.ts`. Módulo da aplicación, configura os elementos que forman a app.
 
+### Lista básica de comandos
 
-	ng new projectName 	// crea o scalfolding do proxecto
-						// pregunta se crea un Router (ficheiro de rutas)
-						// pregunta polo formato de follas de estilo, css ou preprocesados
-	cd projectName 
-	npm start 
-	ng serve 			// arrinca o proxecto
-		--port=000		// establece un porto diferente do predeterminado
+Esta é a lista dos comandos principais de angular. Todos admiten unha  flag `--help` que mostra o manual.
 
-	ng 	g(erate)		// xerar elementos
-		c(omponent)		// compoñente: elemento con modelo de documento
-						// app.module -> declarations
-		s(ervice)		// servizo: elemento que contén un conxunto de funcións sen modelo de documento
-						// app.module -> providers
-		m(odule)		// módulos
-						// app.module ->
-		m app-router --flat --module=app 	// xeración de router
+|Comando | Alias | Flags | Descrición |
+|-|-|-|-|
+| ng add | | | Engade unha libraría externa ao proxecto |
+| ng build | b | | Compila a app para o seu despregue |
+| | | --aot | Activa o modo aot |
+| | | --base-href | modifica a base da url de deploy (./ para windows) |
+| | | --dev | Compila para desenvolvemento|
+| | | --prod | Compila para produción (deprecada) |
+| | | --output-hashing none | quita o número de hash nos ficheiros compilados |
+| ng e2e | e | | Corre os test |
+| ng doc | d | | Mostra a documentación da api de anguar| 
+| ng generate | g | c(component) , s(service) , m(odule), p(ipe), d(irective | Xera ou modifica ficheiros |
+| ng help | | | Lista os comandos dispoñibles |
+| ng new | | | Crea o scalfolding do proxecto |
+| ng serve | s | | Contrúe e serve a app en tempo real |
+| | | --check-host=enabled / disabled | habilita / deshabilita a comprobación do porto |
+| | | --host=localhost | establece o host |
+| | | --port=0000 | establece o porto |
+| ng test | t | | Corre os test unitarios |
+| ng version | v | | Mostra a versión de angular | 
 
-		p(ipe)			// pipes: filtros que se aplican a variables
-			--module module_name 	// hai que especificar en que módulo se declaran 
-		d(irective)		// directiva
-			--module module_name 	// hai que especificar en que módulo se declaran 
 
 APP.MODULE
 	Declara todos os compoñentes e servizos que forman parte da aplicación.
@@ -256,7 +271,7 @@ BOAS PRÁCTICAS
 
 
 
-## PROBAS UNITARIAS
+## Probas unitarias
 
 Karma + Jasmine
 
