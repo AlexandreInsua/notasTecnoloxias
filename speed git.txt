@@ -1,0 +1,33 @@
+1. fork o repositorio
+
+2. descargar repositorio
+git clone https://github.com/AlexandreInsua/hacktoberfest-roll-call.git
+
+3. ir ao repositorio
+cd cd hacktoberfest-roll-call
+
+4. crear nova rama
+git checkout -b branch-name
+
+
+5. realizar cambios
+
+6. engadir cambios á rama
+git add .
+
+7. comitear
+git commit -m "added myself to roll call"
+
+8. enviar cambios ao repositorio
+git push origin branch-name
+
+9. ir ao repositorio e facer a pull request
+
+
+busca issues
+state:open type:issue angular test hacktoberfest
+
+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
+
+
+fontFamily: Consolas, 'Courier New', monospace

@@ -1,0 +1,49 @@
+ADMINISTRACIÓN DE SERVIDORES LINUX
+
+LINUX
+Sistema operativo libre multiusuario, multiplataforma, multitarefa:
+
+Distribuicións (tipo, xestor de paquetes, formato de paquetes)
+	- Debian: apt, .deb
+	- Redhat: rpm | yum, .rpm
+	- Slackware: apt, .tgz
+
+MÉTODOS DE ACCESO
+
+ip servidor en aws 3.18.246.29
+
+
+SSH (Secure Shell)
+	Similar a Telnet, pero está cifrado. Por defecto usa o porto 22.
+	Ten a seguinte sintaxe:
+		ssh -l {usuario} - {porto} {equipo-remoto}
+	Tamén ten outra sintaxe alternativa
+		ssh {usuario}@{equipo-remoto}
+
+	A primeira conexión nun servidor securizado é 
+		ssh -i /kp.pem {usuario}@{equipo-remoto}
+
+
+TELNET 
+	Conexión non cifrada. Agora úsase para testear portos vivos
+
+COMANDOS BÁSICOS
+	pwd (print working directory): enderezo actual
+	cd (change directory): cambia directorio
+	ls (list): lista ficheiros e directorios
+
+	mkdir (make directory): crea directorio
+	touch (): crea ficheiro
+	history (): mostra o historial de comandos
+	rm : elimina ficheiro ou directorios valeiros
+	rm -R: elimina directorios
+	
+
+ESTRUTURA DE DIRECTORIOS
+	/: 
+	etc: 
+
+
+
+INSTALAR LET'S ENCRYTP EN APACHE
+https://www.digitalocean.com/community/tutorials/como-proteger-apache-con-let-s-encrypt-en-ubuntu-18-04-es
