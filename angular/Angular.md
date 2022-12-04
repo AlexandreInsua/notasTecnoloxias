@@ -394,6 +394,25 @@ Actualizo un proxecto de 10 a 11.
 Actualizao un proxcto de 11 a 12.
 Na versión 12 cambia a compilación a produción a `ng build --configuration production`.
 
+
+# NOTAS ANGULAR
+
+
+## Actualizar  Angular 
+
+Actualizar Angular globalmente 
+
+`npm install -g @angular/cli@latest`
+
+Actualizar proxecto de Angular. Seguir as instrucións da guía de actualización oficial en
+[Angular Update Guide](https://update.angular.io/).
+
+
+
+
+
+
+
 # REFERENCIAS
 Moldeo Interactive Angular en español
 ://www.youtube.com/watch?v=k1uM6YeEx6g&list=PLHgpVrCyLWApLDoezmOfrUXb-IMoDs5Ls&index=1
