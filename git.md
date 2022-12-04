@@ -27,9 +27,9 @@ En Linux da familia Debian, `apt-get install git`.
 
 `git --version`. Mostra a versión actual.
 
-`git config --global username "[username]"`. Configuración global de usuario.
+`git config --global user.name "[username]"`. Configuración global de usuario.
 
-`git config --global mail "[mail]"`. Configuración global de correo electrónico.
+`git config --global user.mail "[mail]"`. Configuración global de correo electrónico.
 
 `git config --list`. Mostra a configuración local.
 

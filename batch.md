@@ -1,6 +1,5 @@
 # FICHEIROS BATCH
 
-
 Borrar directorio recurrentemente
     `RD /S directorio`
 
