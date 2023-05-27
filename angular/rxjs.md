@@ -8,6 +8,8 @@ Necesitamos un xeito de crear streams, subscribirmonos a eles, reaccionar a novo
 
 Un Observable é un tipo de datos primitivo que implementa unha API como un array, incluíndo métodos funcionais, per é diferente dun stream.
 
+Por tanto _Streams_ e _Observables_ snon son os mesmos. Un _Stream_ é unha secuencia continua de datos, mentres que un _Observable_ é unha abstracción que represnta un fluxo de datos asíncronos que pode emitir un ou varios valores, é un xeito de acceder a un stream e necesita se subscrito para ser usado. Por convención, os nomes dos observables en Angular teñen un signo do dólar ao final. 
+
 ## Intro a RxJs
 
 **Reactive Extensión for JavaScript** (_RxJs_) é unha librería que implementa observables par Js. Por exemplo, o fluxo de datos `0, 1, 2, 3, 4`, emitido un valor cada segundo implementado usando RxJs é 
@@ -160,6 +162,10 @@ Observer 2 value 1
 ...
 ```
 
+
+### O operador concat
+
+O operador contat realiza varias peticións ao mesmo tempo. Recibe varios observables e devolve un só. Agarda a que o observable se complete antes de pasar ao seguiten. 
 ## Tratamento de erros
 O operador `catchError()` captura un erro no observable para ser manexaod retornando outro observable ou lanzando un erro.
 
