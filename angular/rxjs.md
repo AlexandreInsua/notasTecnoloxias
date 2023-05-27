@@ -159,3 +159,9 @@ Observer 1 value 1
 Observer 2 value 1
 ...
 ```
+
+## Tratamento de erros
+O operador `catchError()` captura un erro no observable para ser manexaod retornando outro observable ou lanzando un erro.
+
+O operator `throwError()`crea un observable que creará un ero e o enviará ao consumidor inmediatamente despois da subscrición. 
+

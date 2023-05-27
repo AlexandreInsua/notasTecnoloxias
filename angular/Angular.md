@@ -433,3 +433,19 @@ https://blog.angular-university.io/angular-ngif/?&utm_source=newsletter&utm_medi
 
 importar un mapa de leaflet
 https://www.digitalocean.com/community/tutorials/angular-angular-and-leaflet
+
+
+## INXECCIÓN DE DEPENDENCIAS
+
+## A función inject
+
+A partir da versión 14 hai un novo xeito de inxectar dependencias nos compoñentes: trátase de usar a función `inject()`.
+
+Podemos prencicir da función constructora medina esta nova sinxtaxe:
+
+```Typescript
+private readonly myService = inject(MyService);
+```
+As clases fillas non necesitan pasarlle as dependencias ao `super()` no seu construtor. Os tests simplificanse.
+
+
