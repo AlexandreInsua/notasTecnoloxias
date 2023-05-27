@@ -1,6 +1,46 @@
+# HttpModule
+
+## HttpClient
+Os métodos dos HttpClient sempre retornan observables, o tipo `Observable<Response>` está implícito en todos eles. Despois de a información ser enviada (ou ter nha mensaxe de erro) o observable complétase. Como envía un obxecto de tipo Response ten métodos e campos propios. Por exemplo, o método `json()` que devolve só os datos e non a resposta completa.
+
+A arquitectura dunha aplicación debe estar estruturada en capas: a do compoñente, a dos servizos, e a capa do HttpClient de forma que os compoñentes sexan agnósticos da orixe dos datos. Un resolver formar parte da capa de servizos. Por tanto, o protótipo será un servizo que implementa un HttpClient e devolvar o observable da chamada. Un exemplo que pide as leccións dun curso sería algo así:
+
+```Typescript
+@Injectable({provideIn: 'root'})
+export class LessonService {
+    constructor(private readonly http: HttpClient){}
+    loadLessons(): Observable<Lesson[]> {
+        return this.http.get<Lesson[]>('/lessons')
+            .map( res => res.json());
+    }
+}
+```
+e tería un compoñente que o usa:
+
+```Typescript
+@Component({
+    selector: 'app',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css']
+})
+
+export class AppCompontent {
+    lessons: Lesson[];
+    private lessonService;
+
+    constructor() {
+        lessonService = inject(LessonService);
+    }
+
+    const lessonsS = this.lessonService.loadLessons();
+
+    lessons$.subscribe( (lessons: Lesson[]) => this.lessons = lessons)
+}
+```
+
 
 ## Peticións http
-Todos os métodos dos HttpCliene teñen un parámeto opción chamado options que éun obxecto onde se poden configurar as headers da peticiónque pode recibir un obxecto de tipo HttpHeaders ou un obxecto que conté un número indeterminado de pares de chave-valor onde a chave á un string e o valor é outro string ou un array de strings. 
+Todos os métodos dos HttpClient teñen un parámeto opción chamado options que éun obxecto onde se poden configurar as headers da peticiónque pode recibir un obxecto de tipo HttpHeaders ou un obxecto que conté un número indeterminado de pares de chave-valor onde a chave á un string e o valor é outro string ou un array de strings. 
 
 Outra posibilidade é enviar query params dentro destas options. Pra isto establécese a propiedade params que recibe un tipo de dato HttpParams ou un obxecto con un número indetermindado de chaves-valor. Como particularidade ten unha sintaxe propia para o seu seteo:
 
@@ -74,3 +114,14 @@ Para usar o resolver hai que modificar o módulo de rutas onde está declarada a
     resolver: [RecipesResolverService] 
 };
 ```
+
+## Reintentar una petición en caso de erro
+
+Os observables teñen un método `retryWhen()` que reintenta a chamada despois de que se cumpra unha condición:
+
+```Typescript
+this.lessons$ = this.lessonsService.loadLessons()
+    .retryWhen( errors => errors.delay(5000));
+```
+
+Este código reintenta a chamada despois de 5 segundos despois de recibir un eror ata que recibe unha resposta correcta.
