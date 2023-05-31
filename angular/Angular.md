@@ -439,9 +439,27 @@ https://www.digitalocean.com/community/tutorials/angular-angular-and-leaflet
 
 ## A función inject
 
-A partir da versión 14 hai un novo xeito de inxectar dependencias nos compoñentes: trátase de usar a función `inject()`.
+A partir da versión 14 (xuño 22) hai un novo xeito de inxectar dependencias nos compoñentes: trátase de usar a función `inject()` que se importa do core.
 
-Podemos prencicir da función constructora medina esta nova sinxtaxe:
+Para usala créase unha referencia ao elemento que se vai inxectar e no coro na do constructor faise a inicialización:
+
+```Typescript
+import { Component, inject } from '@angular/core';
+import { Myservice } from './my.service';
+
+@Component({...})
+
+export class My component {
+	private myService?: MyService;
+
+	constructor(){
+		this.myService = inject(MyService);
+	}
+}
+```
+
+
+Podemos prencidir da función constructora mediante esta nova sinxtaxe:
 
 ```Typescript
 private readonly myService = inject(MyService);
