@@ -467,3 +467,278 @@ private readonly myService = inject(MyService);
 As clases fillas non necesitan pasarlle as dependencias ao `super()` no seu construtor. Os tests simplificanse.
 
 
+##  CONTENT PROJECTION
+
+### A directiva ng-content e a Content Projection
+
+A Proxección de Contido (_Content Projectio_) é unha característica do framework Angular que permite a transferencia de contido dinámico dun componente pai a un componente fillo.
+
+En Angular, os compoñentes son os bloques de construción básicos da aplicación. Están compostos por unha estrutura de marcado HTML, estilos CSS e lóxica específica. Nalgúns casos, é necesario que un compoñente pai proporcione contido adicional ao compoñente fillo para que este poida renderizalo nun lugar específico.
+
+A Proxección de Contido entra en xogo neste punto. Permite definir un marcador de espazo nun compoñente fillo, indicando onde o contido proporcionado polo compoñente pai debe ser inserido. O compoñente pai pode entón pasar ese contido ao fillo usando as etiquetas <ng-content> ou <ng-content select="...">.
+
+A etiqueta <ng-content> no compoñente fillo define o lugar onde se proxectará o contido. Se tiver varios lugares de proxección no compoñente fillo, pódese utilizar o selector opcional "select" para especificar qué contido debe ser inserido en cada lugar.
+
+A Proxección de Contido é útil cando se necesitan crear compoñentes reutilizables que poidan recibir contido personalizado en diferentes contextos. Permite crear compoñentes flexibles e modulares, facilitando a composición de interfaces de usuario complexas.
+
+Para enente o problema tomemos un exemplo de deseño clásico. Trátase dun formulario cuxos inputs son un compoñente personalizado que implementan input nativos.
+
+Vexamos o código:
+
+_form.component.ts_
+```Typescript
+@Component({
+	selector: 'app-form',
+	template: `
+		<h1>FA imput></h1>
+		<fa-input icon="envelope" (value)="onNewValue($event)"></fa-input>
+		<fa-input icon="look" (value)="onNewValue($event)"></fa-input>
+	`
+})
+export class FormComponent{
+	onNewValue(val){
+		console.log(vale)
+	}
+}
+```
+
+Aquí temos un elemento HTML personalizado chamado <fa-input> que toma o nome do icono e mostra os valores nunha caixa de texto. É unha aproximación inicial pero ten varios problemas. A implementación deste compoñente é a seguinte:
+
+_fa-imput.component.ts_
+```Typescript
+@Component({
+	selector: 'fa-input',
+	template: `
+		<i class="fa" [ngClass]="clasess"></i>
+		<input (focus)="inputFocus=true"
+				(blur)="inputFocus=false"
+				(keyup)="value.emit(input.value)"
+				#input></input>
+	`,
+	styleUrls: ['./fa-input.componente.css']
+})
+export class FaInputComponent{
+	@input() icon: string;
+	@Output() value = new EventEmmiter<string>();
+	inputFocus = false;
+
+	get clases(){
+		const cssClasses = {
+			fa: true
+		}
+		cssClasses['fa-' + this.icon] = true;
+		return cssClases
+	}
+
+	@HostBinding('class.focus')
+	get focus{
+		console.log(this.inputFocus);
+		return this.inputFocus;
+	}
+}
+```
+
+_fa.input.component.css_
+
+```css
+:host {
+	border: 1px solid grey;
+}
+input {
+	border: none;
+	outline: none;
+}
+:host(.focus) {
+	border: 1px solid blue;
+}
+```
+
+Vemos que o input ten os bordes e os contidos eliminados e que se engadiu un borde semellante no host para crear a ilusión no HTML. O foco tamén está simulado. O compoñente ten unha propiedade `icon` que define o iconoque se vai mostrar. Para detectar o foco usamos o input nativo e usamos un Hostbindind para engadir a clase no host. 
+
+Esta arquitectura ten os seguines problemas:
+1. Problema de deseño. Debemos manter todas as propiedades do input nativo. O compoñente `fa-input` debe simular o comportamento dun input nativo pero non soporta propiedades estándar como `type`, `autocomplete`, `placeholder` ata as 31 estándar sen incluír as propiedades de accesibilidade. A solución posaría por reenviar as propiedades que necesitamos ao input nativo oe que é molesto, pero factible.
+2. A integración cos formuladios de Angular. Para poder incluír este input nun formuladio deberáimso incluir os atributos do formulario tamén no input nativo, como `FormControlName`.
+3. A detección de eventos estándar no navegador. Para poder detectar os eventos e pasarllo ao compoñente pai.
+4. Propiedades personalizadas de 3ª parte. Hai sistemas de terceiros que esperan ceras propiedades, como datos `data-` que necesitan ser soportadas.
+5. O **quid** é que estamos ocultando o input nativo dentro da template do compoñente. Estamos creando unha barreira entre a template externa que coñece as propiedades personalizadas e o input nativo que as debe utilizar. 
+
+## Uso da proxección de contido
+
+Para poder proxecta o contido, refactorizaremos o compoñente pai para que inclúa o contido que se proxectará no compoñente fillo. Por tanto, incluímos o input nativo como elemento de contido (_content element_):
+
+_form.component.ts_ (refactorizado paso 1)
+```Typescript
+@Component({
+	selector: 'app-form',
+	template: `
+		<h1>FA imput></h1>
+		<fa-input icon="envelope" (value)="onNewValue($event)">
+			<input type="email" placeholder="Email"></input>		
+		</fa-input>
+		<fa-input icon="look" (value)="onNewValue($event)"></fa-input>
+	`
+})
+export class FormComponent{ //... 
+}
+```
+
+Neste caso, o input agregouse como parte do contido do elemento personalizado `fa-input`. Isto tamén é habitual en elementos html nativos.
+
+Podemos consultar calquera cousa dos contido dunha etiqueta dun compoñente usando dos decoradores `@ContenChild` e `@ContenChildren`.
+
+Ademáis podemos tomar calquera cousa e usala directamente dentro do compoñente usando a directiva `ng-content`.
+
+_fa-imput.component.ts_ (refactorizado paso 2)
+```Typescript
+@Component({
+	selector: 'fa-input',
+	template: `
+		<i class="fa" [ngClass]="clasess"></i>
+		<ng-content></ngcontent>
+	`,
+	styleUrls: ['./fa-input.componente.css']
+})
+export class FaInputComponent{
+	
+	get clases(){
+		const cssClasses = {
+			fa: true
+		}
+		cssClasses['fa-' + this.icon] = true;
+		return cssClases
+	}
+}
+```
+
+Esta versión accede directamente ao input html, peor non resolver a simulado do foco e rompe os estilos css.
+
+### Aplicar estilos a elementos proxectados
+
+Os estilos do input nativo déixanse de aplicar porque están establecidos dentro do alcance do compoñente `fa-input`, polo que o selector input aplícase dentro da templates dese compoñente.
+
+Cando Angular usa a proxección de contido crea un identificador para o elemento proxectado. A template en tempo de execución queda así: 
+
+```html
+<fa-input icon="envelope" _nghost-c0="">
+	<i _ngcontent-c0="" class="fa fa-envolope"></i>
+	<input placeholder="Email" type="email">
+</fa-input>
+```
+
+para aplicar os estilos hai que modificar o selector polo seguinte:
+
+```css
+:host /depp/ input {
+	border: none;
+	outline: none;
+}
+```
+Introducimos o prefixo `:host` para que os estilos se apliquen dentro deste compoñente. Aplicamos o modificador `/depp/` para que afecte non só aos elementos html deste compoñente, senón tamén a elementos descendentes. Así, o css en tempo de execución será o seguinte:
+```css
+[_nghost-c0]input {
+	border: none;
+	outline: none;
+}
+```
+Deste xeito os estilos manteñen o alcance do compleñent `fa-input` pero se filtrán a calquera input dentro do compoñente en tempo de execucion, incluíndo o input nativo proxectado.
+
+##  Interacción con contido proxecto
+Para simular a funcionalidade do foco necesitamos que o fa-input coñesa se o input proxecto ten o foco ou non. Como non se pode interactuar  directamente coa etiqueta ng-content, aplicamos unha directiva personalizada (que chamaremos inputRef) no input orixinal. 
+
+O html quedaría así:
+_form.component.ts_ (refactorizado paso 3)
+```Typescript
+@Component({
+	selector: 'app-form',
+	template: `
+		<h1>FA imput></h1>
+		<fa-input icon="envelope" (value)="onNewValue($event)">
+			<input inputRef type="email" placeholder="Email"></input>		
+		</fa-input>
+		<fa-input icon="look" (value)="onNewValue($event)"></fa-input>
+	`
+})
+export class FormComponent{ //... 
+}
+```
+
+A directiva esá definida así:
+```Typescript
+@Directive({
+	selector: '[ipnutRef]'
+})
+export class InputRefDirective {
+	focus = false;
+
+	@HostListener("focus")
+	onFocus(){
+		this.focus = true;
+	}
+
+	@HostListener("blur")
+	onBlur(){
+		this.focus = false;
+	}
+}
+```
+
+Agora podemos interactuar co contido proxectado. O compoñente `fa-input` queda así:
+
+_fa-input.component.ts_ (refactorizado paso 4)
+```Typescript
+@Component({
+	selector: 'fa-input',
+	template: `
+		<i class="fa" [ngClass]="clasess"></i>
+		<ng-content></ngcontent>
+	`,
+	styleUrls: ['./fa-input.componente.css']
+})
+export class FaInputComponent{
+	@Input() icon: string;
+
+	@ContentChild(InputRefDirective)
+	input: inputRefDirective;
+
+	@HostBinding("class.focus")
+	getFocus(){
+		return this.input ? this.input.focus : false;
+	}
+	
+	get clases(){
+		const cssClasses = {
+			fa: true
+		}
+		cssClasses['fa-' + this.icon] = true;
+		return cssClases
+	}
+}
+```
+
+Como se pode ver, úsase o decorador `@ContentChild` para inxectar a directiva dentro do compoñente polo que o valor do campo input obtense desa directiva. Por outra parte, o decorador `@HostBinding` estamos seteando a clase css `focus` que define o estilo para o evento onFocus. Con esta implementación temos un compoñente funcional, que sopora as propiedades nativas hatem, a accesibilidade, as propiedades de terceiros e a integración con formularios de Angular. 
+
+## Proxección de contido multiliña
+Como deberíamos facer para facer a proxección non só do input, senón tamén do icono? Podemos sleccionar varios tipos de contido.
+
+_form.component.ts_
+```html
+<fa-input icon="envelope" (value)="onNewValue($event)">
+	<i class="fa fa-envelope">
+	<input inputRef type="email" placeholder="Email">
+</fa-input>
+```
+
+_fa-input.component.ts_ 
+_fa-input.component.ts_ (refactorizado paso 4)
+```Typescript
+@Component({
+	selector: 'fa-input',
+	template: `
+		<ng-content select="i"></ngcontent>
+		<ng-content select="input"></ngcontent>
+	`,
+	styleUrls: ['./fa-input.componente.css']
+})
+export class FaInputComponent{}
+```
+Cada un dos selectores buca un elemento concreto, pero tamén se poderían usar outros selectores css válidos. En caso de que son se estableza a select, capturará o contido que non coincida con ningún selector. GGG
