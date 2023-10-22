@@ -28,26 +28,27 @@ O fluxo de traballo básico consiste en ir crear un proxecto e levantalo nun ser
 
 ### 2.3. Estrutura inicial do proxecto
 
+<!-- TODO: comprobar que pasa na v16 -->
 O proxecto está formado polos seguintes elementos:
-    - `.browserslistrc`. Configuración de navegadores soportados.
-	- `.editorconfig`. Configuración do editor de código.
-    - `.gitignore`. Ficheiro para ficheiros sen seguemento.
-    - `README.md`. Ficheiro de documentación.
-    - `angular.json`. Configuración do proxecto de Angular, build, server, e testing.
-    - `package.json`. Configuración de dependencias de npm e scripts npm.
-    - `package-lock.json`. Información das versións de `node_modules/`
-    - `src/`. Directorio de código fonte. Contén os seguites elementos:
-		- `app/`. Contén os ficheiros das compoñentes da aplicación.
-		- `assets`. Contén ficheiros estáticos como imaxes e outros.
-		- `enviroment`. Contén a configuración para un entorno. En xeral dev e pro.
-		- `favicon.ico`.
-		- `index.html`. Punto de entrada da app. Chama os js compilados que se xeran no `build`.
-		- `polyfills.ts`. Fornece os scripts de polyfill para soporte de navegadores.
-		- `styles.css`. Folla de stilos globais.
-		- `test.ts`. Punto de entrada para os test unitarios.
-    - `node_modules/`. Paques de npm.
-    - `tsconfig.json`. Configuracón de typescript.
-    - `tslint.json`. Configuración de linter.
+- `.browserslistrc`. Configuración de navegadores soportados.
+- `.editorconfig`. Configuración do editor de código.
+- `.gitignore`. Ficheiro para ficheiros sen seguemento.
+- `README.md`. Ficheiro de documentación.
+- `angular.json`. Configuración do proxecto de Angular, build, server, e testing.
+- `package.json`. Configuración de dependencias de npm e scripts npm.
+- `package-lock.json`. Información das versións de `node_modules/`
+- `src/`. Directorio de código fonte. Contén os seguites elementos:
+	- `app/`. Contén os ficheiros das compoñentes da aplicación.
+	 `assets`. Contén ficheiros estáticos como imaxes e outros.
+	 `enviroment`. Contén a configuración para un entorno. En xeral dev e pro.
+	 `favicon.ico`.
+	 `index.html`. Punto de entrada da app. Chama os js compilados que se xeran no `build`.
+	 `polyfills.ts`. Fornece os scripts de polyfill para soporte de navegadores.
+	 `styles.css`. Folla de stilos globais.
+	 `test.ts`. Punto de entrada para os test unitarios.
+- `node_modules/`. Paques de npm.
+- `tsconfig.json`. Configuracón de typescript.
+- `tslint.json`. Configuración de linter.
 
 Dentro do directorio `src/app/` encóntrase a lóxica da app. Por defecto créase o compoñente principal da app que ten os seguintes ficheiros (o resto de compoñentes seguen a mesma estrutura):
 - `app.component.ts`. Lóxica para o compoñente.
@@ -81,13 +82,29 @@ Esta é a lista dos comandos principais de angular. Todos admiten unha  flag `--
 | ng test | t | | Corre os test unitarios |
 | ng version | v | | Mostra a versión de angular | 
 
-## 3 Módulos e compoñentes
+## 3. Módulos e compoñentes
 
-Un compoñente é un conxunto de recuros que forman un todo. En Angular o compoñente típico estár formado por html, os estilos e on controlador en typescript. 
-Un módulos é un elemento superior que agrupa varios compoñentes e outras pezas de código. 
+### 3.1. O compoñente
 
+En Angular un compoñente é un conxunto de recursos que se relacionan cun elmento visual da web. Considérase unha boa práctica buscar que os compoñentes sexan o máis pequenos e reusables que sexa posible. En Angular o compoñente típico estár formado por html, os estilos e on controlador en typescript. A estruura básica deste constrolador é a seguinte:
+- **Importacións**. Permiten importar funcionalses e librarías para o funcionamento do compoñente. Com mínimo vaise importar a definición de liabraría de Anglular:
+	`import { Component } from '@angular/core';`
+- **Configuración do compoñente**. A configuración consiste en especificar os atributos que sexan necesarios para o seu funcionamento a través da directiva _Component_. Esta directiva recibe como parámetro un obxecto de configuración que pode recibir diferentes propieades:
+	- **selector**: define a etiqueta html que se vai usar noutras partes da aplicación para invocar o compoñente.
+	- **template**: string que contén o html  do compoñente ou
+	- **templateUrl**: ruta ao ficheiro html 
+	- **styles**: string coa definición de estilos do compoñente ou
+	- **stylesUL**: array de strings de rutas que definen os stilos do compoñente
+	- **directives**: define as directiva que se van usar o compoñente
+	- **pipes**: define as pipes que se necesitan no compoñente.
+	- **providers**: define os servizos que se necesitan usar no compoñente. Se o compoñente están incluído nun módulos, decláranse ntes.
+	<!-- TODO: ver como queda con stand alone componet-->
+- **Espeficiación do compoñente**. Define e exporta unha clase que define a lóxica de negocio.
 
+### 3.2. O módulo
 
+Un módulo é un elemento superior que agrupa varios compoñentes e outras pezas de código.
+(**NOTA**: A partir da v14 son opcianais. A alternativa é unha aplicación sen módulos).
 
 
 APP.MODULE
