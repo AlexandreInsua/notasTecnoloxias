@@ -1,6 +1,6 @@
 # ANGULAR
 
-## Introdución
+## 1. Introdución
 
 Angular é unha plataforma de desenvolvemento (ou framework de frontend) construído en [Typescript](https://www.typescriptlang.org/). Angular estrutúrase en **components** (ficheiros typescript .ts) e **templates** (ficheiros html).
 Un **component** e un bloque de codigo ts que inclúe unha clase e o decorador `@Component()` que especicifica un selector, un template e opcionalmente unha folla css.
@@ -9,26 +9,32 @@ Angular funciona mercé ao principio de **inxección de dependencias** en virtud
 **Angular cli** é unha interface de liña de comamndos propia que permite realizar múltiples accións.
 Angular fornece de varias librerías propias como son: o Router, Forms, HttpClient, Animations, PWA, Schematics.
 
-## Angular cli
+## 2. Angular cli
 
 A interface de liña de comandos de Angular é unha ferramento que se empreggra para iniciar, levantar a estrutura básica, desenvolver e manter aplicaicón Angular desde a liña de comandos.
 
-### Instalar Angular
+### 2.1. Instalar o CLI de Angular
 
-Para a instalación, córrese o seguinte comando
-- `npm install -g @angular/cli`. 
+Para crear aplicacións de Angular necesitamos instalar a utilidade da liña de comandos. Para isto córrese o seguinte comando
+- `$ npm install -g @angular/cli`. 
 
-### Fluxo de traballo básico
+### 2.2. Fluxo de traballo básico
 
 O fluxo de traballo básico consiste en ir crear un proxecto e levantalo nun servidor;
 
-1. `ng new [project name]`. Crea un novo proxecto nun directorio co mesmo nome. O nome de proxecto debe ser válido como nome de directorio. O proxecto está formado polos seguintes elementos:
+1. `ng new [project name] --prefix [prefix name] --skip-git=true --skip-install=true`. Crea un novo proxecto nun directorio co mesmo nome. O nome de proxecto debe ser válido como nome de directorio. Pódese setear que  a utilidade use un prefixo para os seus componentes diferente dos estándar, tamén podemos ignorar a configuración de git e a instalación inicial dos paquetes npm. 
+2. `cd [project name]`. Cámbiase ao directorio do proxecto.
+3. `ng serve`. Levántase un servidor.
+
+### 2.3. Estrutura inicial do proxecto
+
+O proxecto está formado polos seguintes elementos:
     - `.browserslistrc`. Configuración de navegadores soportados.
 	- `.editorconfig`. Configuración do editor de código.
     - `.gitignore`. Ficheiro para ficheiros sen seguemento.
     - `README.md`. Ficheiro de documentación.
-    - `angular.json`. Configuración de build, server, e testing.
-    - `package.json`. Configuración de dependencias de npm.
+    - `angular.json`. Configuración do proxecto de Angular, build, server, e testing.
+    - `package.json`. Configuración de dependencias de npm e scripts npm.
     - `package-lock.json`. Información das versións de `node_modules/`
     - `src/`. Directorio de código fonte. Contén os seguites elementos:
 		- `app/`. Contén os ficheiros das compoñentes da aplicación.
@@ -42,10 +48,6 @@ O fluxo de traballo básico consiste en ir crear un proxecto e levantalo nun ser
     - `node_modules/`. Paques de npm.
     - `tsconfig.json`. Configuracón de typescript.
     - `tslint.json`. Configuración de linter.
-2. `cd [project name]`. Cámbiase ao directorio do proxecto.
-3. `ng serve`. Levántase un servidor.
-
-### Estrutura básica de compoñentes
 
 Dentro do directorio `src/app/` encóntrase a lóxica da app. Por defecto créase o compoñente principal da app que ten os seguintes ficheiros (o resto de compoñentes seguen a mesma estrutura):
 - `app.component.ts`. Lóxica para o compoñente.
@@ -54,7 +56,7 @@ Dentro do directorio `src/app/` encóntrase a lóxica da app. Por defecto créas
 - `app.component.spec.ts`.  Test unitarios.
 - `app.module.ts`. Módulo da aplicación, configura os elementos que forman a app.
 
-### Lista básica de comandos
+### 2.4. Lista básica de comandos
 
 Esta é a lista dos comandos principais de angular. Todos admiten unha  flag `--help` que mostra o manual.
 
@@ -78,6 +80,14 @@ Esta é a lista dos comandos principais de angular. Todos admiten unha  flag `--
 | | | --port=0000 | establece o porto |
 | ng test | t | | Corre os test unitarios |
 | ng version | v | | Mostra a versión de angular | 
+
+## 3 Módulos e compoñentes
+
+Un compoñente é un conxunto de recuros que forman un todo. En Angular o compoñente típico estár formado por html, os estilos e on controlador en typescript. 
+Un módulos é un elemento superior que agrupa varios compoñentes e outras pezas de código. 
+
+
+
 
 
 APP.MODULE
