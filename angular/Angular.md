@@ -106,15 +106,23 @@ En Angular un compoñente é un conxunto de recursos que se relacionan cun elmen
 Un módulo é un elemento superior que agrupa varios compoñentes e outras pezas de código.
 (**NOTA**: A partir da v14 son opcianais. A alternativa é unha aplicación sen módulos).
 
+A estrutura básica dun módulo de Angular é a seguinte:
+- **importacións**: Importa as funcionalidades, librerías e servizos que necesitamos utilizar nos compoñentes do módulo. Como mínimo inpor a directiva de definición do módulo **ngmodule**:
+`import { NgModule } from '@angular/core';`
+- **configuración do módulo**: A directiva **NgModule({...})** recibe un obxecto de configuración cas seguintes propiedades:
+	- **imports**: Importa  outros módulos para usalos no contexto do módulo.
+	- **exports**: Exporta as directivas e compoñentes que se poden unsar noutros módulos.
+	- **declarations**: Declara compoñentes, directivas e pipes que van usar os compoñentes do módulo.
+	- **providers**: Declara os servizos que se usan no módulo.
+	- **boostrap**: Atributo especial que define o módulo desde o que se vai empezar a cargar a aplicación.
+- **implementación**. Decláráse unha clase valeira:
+```Typescript
+export class MyModule {}
+```
 
-APP.MODULE
-	Declara todos os compoñentes e servizos que forman parte da aplicación.
+Por comvención hai un módulo inicial denominado `AppModule` que declara o compoñente inicial e a configuracion de inicio. Ademais tamén se soe incluír outr modulo para xestionar as rutas, denominado `AppRouterModule`. Necesita as dependencias RouterModule e Routes.
 
-APP.ROUTER
-	Xestiona as rutas da aplicación. En angualar as rutas teñen unha estrutura nodular.
-	Require RouterModule e Routes
 
-A COMPOÑENTES DE ANGULAR
 
 CICLO DE VIDA DAS COMPOÑENTES
 	Os hooks son funcións que permiten acceder a diferentes momentos da compoñente:
