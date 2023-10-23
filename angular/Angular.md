@@ -72,7 +72,7 @@ Esta é a lista dos comandos principais de angular. Todos admiten unha  flag `--
 | | | --output-hashing none | quita o número de hash nos ficheiros compilados |
 | ng e2e | e | | Corre os test |
 | ng doc | d | | Mostra a documentación da api de anguar| 
-| ng generate | g | c(component) , s(service) , m(odule), p(ipe), d(irective | Xera ou modifica ficheiros |
+| ng generate | g | c(component) , s(service) , m(odule), p(ipe), d(irective) | Xera ou modifica ficheiros |
 | ng help | | | Lista os comandos dispoñibles |
 | ng new | | | Crea o scalfolding do proxecto |
 | ng serve | s | | Contrúe e serve a app en tempo real |
@@ -101,7 +101,32 @@ En Angular un compoñente é un conxunto de recursos que se relacionan cun elmen
 	<!-- TODO: ver como queda con stand alone componet-->
 - **Espeficiación do compoñente**. Define e exporta unha clase que define a lóxica de negocio.
 
-### 3.2. O módulo
+Os compoñentes poden crearse co comando `ng generate component [name] [path] --module? --standalone?`. Cando se crea un compoñente seguindo a programación modular, agrégase nas declarations do módulo correspondente, pero para poder usalo fóra do módulo hai que agregalo manualmente ás exports.
+
+### 3.2. Os compoñentes standalone
+
+Un compoñente pode estar defindio sen necesidade de agegalo a ningún módulo. Na configuración do compoñente establécese a propiedade standalone a true:
+```typescript
+@Component({
+	standalone: true,
+	selector: 'my-component',
+	templateUlr: ['./my-component.component.html'],
+	stylesUlr:['./my-component.component.css']
+})
+```
+
+A partir de aí pode usarse en calquera punto da aplicaión mediante o selctor. No caso de necesitar importar outro compoñente ou módulos neste tipo de compoñentes, úsase a propiedade imports:
+```typescript
+@Component({
+	standalone: true,
+	selector: 'my-component',
+	templateUlr: ['./my-component.component.html'],
+	stylesUlr:['./my-component.component.css'],
+	imports: [OtherComponent, OtherModule, OtherService]
+})
+```
+
+### 3.3. O módulo
 
 Un módulo é un elemento superior que agrupa varios compoñentes e outras pezas de código.
 (**NOTA**: A partir da v14 son opcianais. A alternativa é unha aplicación sen módulos).
@@ -122,21 +147,34 @@ export class MyModule {}
 
 Por comvención hai un módulo inicial denominado `AppModule` que declara o compoñente inicial e a configuracion de inicio. Ademais tamén se soe incluír outr modulo para xestionar as rutas, denominado `AppRouterModule`. Necesita as dependencias RouterModule e Routes.
 
+Os módulos creánse co comando `ng generate module [name] [path]`
 
+### 3.4. O ciclo de vida dos compoñentes
 
-CICLO DE VIDA DAS COMPOÑENTES
-	Os hooks son funcións que permiten acceder a diferentes momentos da compoñente:
+O ciclo de vida dos compoñents define os diferntes estados intermedios polos que pasa desde que se crea e se carga ata que se destrúe. Neses estados realizar accións a traves de eventos asociados. Son os seguintes:
 
-	- constructor()
-	- ngOnChanges. Execútase cada vez que se detecta un novo valor de entrada. 
-	- ngOnInit. Inicializa o contido da compoñente e só se executa unha vez. Non ten acceso ao DOM porque aínda non está cargado.
-	- ngDoCheck. Execútase despois do init e cando detecta cambios na compoñente.
-		· Os ngAfter afectan ao template.
-			ngAfterContentInit. Execútase cando o contido se carga.
-			ngAfterContentChecked. Execútase cando algo do contido se modifica.
-			ngAfterViewInit. Execútase cando se cargan view e viewchild.
-			ngAfterViewChecked.  Execútase cando se modifica view e viewchild.
-	- ngOnDestroy. Execútase cando se destrue a compoñente.
+- **ngOnChanges**. Este evento Execútase cada vez que se detecta cambios no compoñente, e antes de OnInit e OnCheck. Crea un obxecto cos valores previos e os actuais.
+- **ngOnInit**. Execútase unha vez ao iniciarse o compoñente e só se executa unha vez. Non ten acceso ao DOM porque aínda non está cargado.
+- **ngDoCheck**. Execútase despois de OnChanges e produce un obxecto cos novos valores pero non cos anteriores. Non se debe usar xunto con OnChanges.
+- **ngAfterContentInit**. Execútase cando unha vez despois de se remate de iniciar o compoñente.
+- **ngAfterContentChecked**. Execútase despois de que se chequee os cambios no compoñentes.
+- **ngAfterViewInit**. Execútase de inicializar a vista do compoñente, cando se cargan view e viewchild.
+- **ngAfterViewChecked**.  Execútase  despois de cada chequeo da vista do compoñente, cando se modifica view e viewchild.
+- **ngOnDestroy**. Execútase inmediantemente antes de que se destrúa o compoñente.
+
+Para configurar un evento impórtase a interface que manexa o evento:
+
+`import { Component, OnInit } from '@angular/core';`
+
+e despois impleméntase a interface:
+
+```typescript
+export class MyComponent implements OnInit {
+	ngOnInit() { 
+		//....
+	 }
+}
+```
 
 PIPE
 	Predeseñadas : uppercase, lowercase
@@ -302,6 +340,8 @@ SEO
 
 
 BOAS PRÁCTICAS 
+
+
 
 
 
