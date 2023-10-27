@@ -176,6 +176,185 @@ export class MyComponent implements OnInit {
 }
 ```
 
+### 4. Enlazado de datos
+
+### 4.1. Data binding (enlazado de datos) en Angular
+
+Un compoñente está composto dunha template (patrón) HTML + CSS que se considera como a vista e un modelo e controlador que interactúan entre si mediante o enlazdo de datos (data binding), que é a técnica que conecta os dtos do modelo coa vista a través do controlador. Existen tres tipos de data binding.
+
+#### 4.1.1. Property binding
+
+Dado o seguinte código:
+
+_hi-world.component.html_
+```html
+<div>Ola {{ userName }}</div>
+<div> Ola <span [innerHtml]="userName"></span></div>
+<button disabled="{{changed}}"></button>
+<button [disabled]="changed"></button>
+```
+
+_hi-world.component.ts_
+```typescript
+import { Component } from '@angular/core';
+
+@Component({
+	selector: 'hi-world',
+	templateUrl:: 'hi-world.component.html'
+})
+export clase HiWorldComponent {
+	userName = "Alexandre";
+	changed = false;
+}
+```
+Este código ten como saída:
+```
+Ola Alexandre!
+Ola Alexandre!
+[botón desactivado] [botón activado]
+```
+
+
+Como se pode ver, hai dúas formas de declarar un property binding. 
+* {{expresión}}: coa sintaxe da sobre chave estamos asociado unha variable declarada no compoñente coa template.
+* [propiedade]="expresión": coa sintaxe asociamos o valor dunha expresión cunha propidade do elemento html, da etiqueta.
+
+#### 4.1.2. Atributos e propiedades
+
+Un **atributo** forma parte da propia etiqueta, do elemento html, mentres que unha **propiedade** forma parte do obxecto correspondente no DOM. Dánse os seguintes casos:
+- Relación 1:1 entre atributos e propiedades, como o id dun elemento, que existe como atributo da etiqueta o como propiedade do obxecto.
+- Propiedades sen atributo, como o textContent.
+- Atributos se propiedade, como colspan.
+- Atributo que inicializa unha propiedade pero non a actualiza. Son a maior parte de casos.
+
+O caso máis común é o de un atributo que fixo o valor inicial da propiedade con elemento do DOM pero que están desconectados, por exemplo o value dos input, que se inicializa co valor da etiqueta e se actualiza cos cambios no input.
+
+O resultado do template anterior é 
+```html
+<button disabled="false"></button>
+<button></button>
+```
+No primeiro caso, o atributo disabled fai caso omiso do valor que se lle asignar. Só con estar presente xa se deshabilita o elemento, polo que por debaixo a propiedade por debaixo ten o valor de true. No segundo caso, asignamos un valor false.
+
+#### 4.1.3. Comunicación entre compoñentes usando o property binding
+
+A property binding tamén se usan para comuncar compoñentes. O caso de uso é pasarlle variables dun compoñente pai a un compoñente fillo. Para isto utilización a sintaxe Pai -> [propiedade fillo]="valor no pai" -> Fillo. Onde especificamos a propiedade dun fillo e a asociamos co compoñente pai:
+
+_componente-pai.component.ts_
+```typescript
+import { Component } from '@angular/core';
+import { ComponenteFilloComponent } from './component-fillo.component.ts';
+
+@Component({
+	selector: 'componente-pai',
+	template: `<componente-fillo [name]="userName"></componente-fillo>`
+})
+export class ComponentePaiComponent {
+	userName = "Alexandre";
+}
+```
+_componente-fillo.component.ts_
+```typescript
+import { Component, Input } from '@angular/core';
+
+@Component({
+	selector: 'componente-fillo',
+	template: `<div>Ola {{ name}}</div>`
+})
+export class ComponenteFilloComponent {
+	@Input() name; string;
+}
+```
+Para especificar que unah variable vai ser enviada desde un compoñente externo, úsase a directiva Input coa sintaxe @Input('alias) nome_da_variable: tipo, onde o alias é opcial e úsase para referise a variable no compoñente pai entre corchetes. Caso de non setearse, úsase o nome da variable.
+Se o proxecto tes seteado o modo estrito, esta variable non pose ficar se inicializarse e dará mensaxe de erro. Para solucionar isto hai dúas sintaxes alternativas:
+
+* `@Input name: string | null = nul;` para o caso de que poda se nula e
+* `@Input name!: string;` para o caso de que nunca sexa nula.
+
+#### 4.1.4. Event binding
+
+É unha técnica que consiste en asociar un evento e unha expresión, de xeito que conectamos a template co compoñente. Sexa o seguinte código:
+
+_say-hello.component.html_
+```html
+<button (click)"sayHello($event)" value="Ola!">Di Ola</button>
+```
+_say-hello.component.ts_
+```typescript
+import { Component } from '@angular/core';
+
+@Component({
+	selector: 'say-hello',
+	templateUrl: './say-hello.component.ts'
+})
+export class SayHelloComponent {
+	sayHello(event: Event){
+		alert(event.target.value)
+	}
+}
+```
+Neste exemplo asoiacmos un evento de tipo click ao botón. Cando se producza este enento avaliarase a expresión, neste caso, executarase a función. O `$event` é un obxecto que simboliza o elemento do DOM, polo que podemos aceder a eles e interactuar coa súas propiedades. Convencionalmente úsase o signo de dolar ($) **antes** dos nomes de variables ou parámetros para indicrar que apuntan a un elemento do DOM.
+
+#### 4.1.5. Comunicación enter compoñentes mediante event bindind
+
+Para acutalizar o pia coas accións que ocorres no compoñente fillo, farémolo a traves de eventos coa sintaxe Pai <-- (eventoFillo)="listenerPai()" <--Fillo. Sexa o seguinte código.
+
+_componente-pai.component.ts_
+```typescript
+import { Component } from '@angular/core';
+import { ComponenteFilloComponent } from './component-fillo.component.ts';
+
+@Component{(
+	selector: 'pai',
+	template: `	<div>{{frase}}</div>
+				<fillo (eventoFillo)="listernerPai($event)"></fillo>`
+)}
+export class CompoenentePaiComponent {
+	frase = "";
+
+	listenerPai(event): void {
+		this.frase = event;
+	}
+}
+```
+
+_componente-fillo.component.ts_
+```typescript
+import { Component, EventEmiter, Output } from '@angular/core';
+
+@Component({
+	selector: 'fillo',
+	template: `<button (click)="sayHello()">Di ola</button>`
+})
+export class FilloComponent {
+	@Output() eventoFillo = new EventEmmiter();
+
+	sayHello(){
+		this.eventoFillo.emit("Ola");
+	}
+}
+```
+
+Como se pode ver para comunicar os compoñentes temos que usar varias directivas adicionais. No compoñente fillo importamos as directivas Output, que indica que a variable vai "sair" do compoñente e a clase EventEmitter, que permite emitir  eventos personalizados.
+
+#### 4.1.6. Enlace bidireccional (two way data binding / banana in the box)
+
+É posible establecer un enlace bidireccional mediante a técnica como Two-way Data Binding que pon a disposición ambas conexión ao mesmo tempo. Un case de uso é actualizar unha variable que se introduce nun input nun formulario. A sintaxe teórica seria
+```html
+<input [value]="userName" (input)=`userName = $event.target.value`>
+```
+que se pode reescribir así: 
+```html
+<input [(ngModel)]="userName">
+```
+
+Coa sintaxe [(propiedade)]="expresion" estamos dicindo que se van usar ambos eventos ao mesmo tempo para mostrar a actualizar o valor. Coa propiedade ngModel estamos dicíndolle a Angular que vas usar a propiedade value para que a xestione. Para usal hai que importar o modelo de formularios de Angular (FormModule).
+
+### 5. Pipes
+
+### 6. Directivas
+
+
 PIPE
 	Predeseñadas : uppercase, lowercase
 
