@@ -352,7 +352,120 @@ Coa sintaxe [(propiedade)]="expresion" estamos dicindo que se van usar ambos eve
 
 ### 5. Pipes
 
+As pipes son elementos que procesan un dato como temos definido e representalo na aplicación.
+
 ### 6. Directivas
+
+As directiva son un tipo de elemento de Angular que nos permite modificar o comportamento do html en tempo de execución. Hai os seguintes tipos de directivas:
+- Compoñentes. Son as que permiten crear compoñentes reutilizables.
+- Atributos. Son as que modifican os propiedades ou atributos dun elemento html segundo o estado da aplicación.
+
+#### 6.1. Directivas estruturais
+
+As directivas estruturais son aquelas que modifican a estrutura por defecto do html dun compoñente. Angular proporciona varias directivas estruturais de base, dentro do seu core, 
+
+- **Directiva ngIf**. üsase para engadir un elemento do DOM en función de se unha condición se cumpre ou non. Ten a seguinte sintaxe: `<tag *ngIf="expresion"></tag>`, onde a expresión deber ser unha válida para JS. Creará e mostrará o elemento no DOM se a expresión se avalía a verdadeiro e non o fará se se avalía a falso. O asterisco é obrigatorio porque é un alias a un template. O HTML real é o seguinte:
+	```html
+	<template [ngIf]="expresion"><tag></tag></template>
+	```
+	Esta directiva permite exoller entre diferentes bloques de código dependendo da condición facendo uso da sintaxe con 'else':
+	```html
+	<tag *ngIf="expresion; else #elseBlock"></tag>
+	<ng-template #elseBloack><>
+	```
+- **Directiva ngFor**. üsase para traballar con listas de elementos. Función igual que un bucle de iteración. A sintaxe é a seguinte: `<tag *ngFor="let element of collection">{{element.view}}</tag>`: O asterisco é obrigatorio pola mesma razón que o anterior. No caso de a colección ser moi grande e subre unha modificación, perderemos rendemento. Angular proporciona a funcionalidade trackBy que se asocia a unha función que xestionan o obxecto que cambia. Ten a seguinte sintaxe:
+	```html
+	<div *ngFor="let e of elements; let i = index; trackBy: trackItems"></div>
+	```
+	e a función asociada recibe o índice da lista e o item ta lista e devolve o seu id de forma que en lugar de actualizar toda a lista, só actulizará o elemento que recibe os cambios no seu estado.
+	```typescript
+	trackItems(index:number, item: Item){
+		return item.id
+	}
+	```
+	A directiva ngFor pode recibir máis elementos, first, last, even e odd útiles para xestionar a lista.
+- **Directiva ngSwitch**. Funciona igual que calquera estrutura de selección. Ten a seguinte sintaxe: 
+```html
+<span [ngSwitch]="property">
+	<span *ngSwitchCase="value1">Value 1</span>
+	<span *ngSwitchCase="value2">Value 2</span>
+	<span *ngSwitchCase="value3">Value 3</span>
+</span>
+Neste caso o binding faise de un dos caos obre o switch pai. O asterisco indica onde hai un template funcionando por debaixo.
+```
+
+#### 6.2. Directivas de atributo
+
+As directivas de atributo son aquelas que modifican a apariencia ou o comportamento dun elemento. Angular proporciona dúas por defecto no seu core:
+
+- **ngClass**. Con esta directiva podemos controlar o aspecto dos elementos engadindo ou eliminando clases css do seu atributo _class_. Podemos facelo de dous xeitos. 
+	- A primeira é modificando a propiedade dun elemento, usando o property binding `<div [class.active]="isActive">Estou activo<div>`.
+	- De xeito alternativo temos a alternativa _ngClass_ é unha alternativa especialmente útil para manexar varios clases ao mesmo tempo. Pode recibir un string, un array ou un obxecto de configuración:
+		- [ngClass]="'first'": un string só pode conter unha clase css.
+		- [ngClass]="['first', 'active']": un array pode conter varias clases css.
+		- [ngClass]="{'first: isFirst, 'active': this.item.isActive, 'decorated':true}": un obxecto recibe varios pares de chaves-valor. As chaves son string e son os nomes das clases css, os valores son expresións válidas.
+	Hai máis opcións. Podemos facer que a directiva invoque unha función que devolve un obxecto de configuración, como por exemplo [ngClass]="objectConfiguration()", ou directamente a unha propiedade no componente. 
+- **ngStyle**. É unha directiva paralela á directiva ngClass. Coa directiva ngStyle podemos agregar ou quitar estilos. Tamén tempos varias alternativas:
+	- Usar o property binding: `<div [style.color]=red>Está en vermello</div`. 
+	- Usar o obxector de configuración `<div [ngStyle]={'color': isRequired ? 'red': inherit'}>Está en vermello ou non</div`. 
+
+Ambas directivas son destrutivas. E caso de conflito dos estilos dun compoñente gaña o último que fose avaliados. As propiedades class e styles funciona como o css en orde de especificicade. Por exemplo style.color non sobrescribe todos os stilos, unicamente a propiedade color. 
+
+#### 6.3. Directivas de atributo personalizadas
+
+Angular permite crear directivas de atributos personalizadas.  Créase co comando `$ ng generate directive`. Unha directiva personalizada é unha clase que implementa algúnha comportamento que pode ser aplicado a un elemento. Esta decorada con @Directive que recibe un obxecto de configuración que especifica a propiedade selector que será o nome da directiva que se lle engade ao html. 
+
+Exemplo que define unha directiva personalizada que escoita unha función de callback, se se confirma unha acción.
+_my-custom-directive.ts_
+```typescript
+import { Directive, HostListener, Input } from '@angular/core';
+
+@Directive({
+	selector: 'my-custom-directive'
+})
+export class MyCustomDirective {
+	@Input('confirm') fn:Function;
+	@HostListener('click', ['$event']);
+
+	onClick(){
+		const confm window.confirm('Estás seguro?');
+		if (confirm) {
+			this.fn();
+		}
+	}
+}
+```
+
+_my-component.ts_
+```typescript
+import { MyCustomDirective } from './my-custom-directive.ts';
+
+save(){
+	console.log('saved');
+}
+```
+_my-component.html_
+```html
+<button [confirm]="save" my-custom-directive> Gardar </button>
+```
+
+Como se pode ver, no compoñente úsase a drectiva e selle pasa como input a referencia á función que se vai executar posteriormente.
+
+#### 6.4. HostListener
+A anotación HostListener asocian unha función a un evento se se produce no host que usa a directiva. Ten a seguinte sintaxe:
+```typescript
+@HostListener('event', ['$event'])
+nameFunction(){
+	//... implementación
+}
+```
+A anotación recibe dous parámetros. O primeiro é un string que representa o evento que se quere escoitas e que se produce no host que usa a directiva ou no documento en xeral. O segundo é un array de argumentos. No exemplo é unha referencia ao evento mesmo.
+
+#### 6.5. HostBinding
+
+A anotación HostBinding detecta os cambios sufridos sobre unha propiedade de algún elemento. Para definila, hai que especificar a propiedade que se vai observar. Ten a seguinte sintaxe: `@Hostbinding('attr.role') role='main'`.
+
+
 
 
 PIPE
