@@ -352,7 +352,39 @@ Coa sintaxe [(propiedade)]="expresion" estamos dicindo que se van usar ambos eve
 
 ### 5. Pipes
 
-As pipes son elementos que procesan un dato como temos definido e representalo na aplicación.
+En Angular as pipes permítennos modificar os datos que se van representar na vista e facleas máis lexibles. Non é tanto unha modificación dos datos senón unha máscara. O exemplo típico é a representación das datas. Angular proporciona varias pipes de base:
+- Decimal Pipe: formatea números decimais.
+- Slice Pipe: extrae un subconxunto dun array ou dun string.
+- Currency Pipe: formatea números monetarios.
+- Date Pipe: formatea datas
+
+Algunhas destas soporta o uso dun sistema de internacionlización de Angular baseada no uso de "locales" correspondentes. Un localse é un identificador de tipo idioma-rexión. O locale configúrase no app module para facelo de xeito global: `providers: [{ provide: LOCALE_ID, useValue: 'gl' }]`
+
+#### 5.1. Pipes personalizadas
+
+Pódese crear pipes personalizadas. Unha pipe é un clase co decorador @Pipe e que implementa a interface PipeTransform. Créase co comando `$ ng generate pipe`. Por exemplo, a seguinte pipe normaliza número de teléfono e engade un prefixo:
+
+_number-perefix.ts_
+```typescript
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+	name: 'phonePrefix'
+})
+
+export class PhonePreficePipe implements PipeTransform {
+	transform {value: string, country?:string} {
+		let prefix = '';
+		switch(country){
+			case 'es':
+				prefix = '+34';
+				break;
+		}
+		return prefix + value;
+	}
+}
+
+```
 
 ### 6. Directivas
 
