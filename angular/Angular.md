@@ -176,7 +176,7 @@ export class MyComponent implements OnInit {
 }
 ```
 
-### 4. Enlazado de datos
+## 4. Enlazado de datos
 
 ### 4.1. Data binding (enlazado de datos) en Angular
 
@@ -350,7 +350,7 @@ que se pode reescribir así:
 
 Coa sintaxe [(propiedade)]="expresion" estamos dicindo que se van usar ambos eventos ao mesmo tempo para mostrar a actualizar o valor. Coa propiedade ngModel estamos dicíndolle a Angular que vas usar a propiedade value para que a xestione. Para usal hai que importar o modelo de formularios de Angular (FormModule).
 
-### 5. Pipes
+## 5. Pipes
 
 En Angular as pipes permítennos modificar os datos que se van representar na vista e facleas máis lexibles. Non é tanto unha modificación dos datos senón unha máscara. O exemplo típico é a representación das datas. Angular proporciona varias pipes de base:
 - Decimal Pipe: formatea números decimais.
@@ -386,13 +386,13 @@ export class PhonePreficePipe implements PipeTransform {
 
 ```
 
-### 6. Directivas
+## 6. Directivas
 
 As directiva son un tipo de elemento de Angular que nos permite modificar o comportamento do html en tempo de execución. Hai os seguintes tipos de directivas:
 - Compoñentes. Son as que permiten crear compoñentes reutilizables.
 - Atributos. Son as que modifican os propiedades ou atributos dun elemento html segundo o estado da aplicación.
 
-#### 6.1. Directivas estruturais
+### 6.1. Directivas estruturais
 
 As directivas estruturais son aquelas que modifican a estrutura por defecto do html dun compoñente. Angular proporciona varias directivas estruturais de base, dentro do seu core, 
 
@@ -426,7 +426,7 @@ As directivas estruturais son aquelas que modifican a estrutura por defecto do h
 Neste caso o binding faise de un dos caos obre o switch pai. O asterisco indica onde hai un template funcionando por debaixo.
 ```
 
-#### 6.2. Directivas de atributo
+### 6.2. Directivas de atributo
 
 As directivas de atributo son aquelas que modifican a apariencia ou o comportamento dun elemento. Angular proporciona dúas por defecto no seu core:
 
@@ -443,7 +443,7 @@ As directivas de atributo son aquelas que modifican a apariencia ou o comportame
 
 Ambas directivas son destrutivas. E caso de conflito dos estilos dun compoñente gaña o último que fose avaliados. As propiedades class e styles funciona como o css en orde de especificicade. Por exemplo style.color non sobrescribe todos os stilos, unicamente a propiedade color. 
 
-#### 6.3. Directivas de atributo personalizadas
+### 6.3. Directivas de atributo personalizadas
 
 Angular permite crear directivas de atributos personalizadas.  Créase co comando `$ ng generate directive`. Unha directiva personalizada é unha clase que implementa algúnha comportamento que pode ser aplicado a un elemento. Esta decorada con @Directive que recibe un obxecto de configuración que especifica a propiedade selector que será o nome da directiva que se lle engade ao html. 
 
@@ -483,7 +483,7 @@ _my-component.html_
 
 Como se pode ver, no compoñente úsase a drectiva e selle pasa como input a referencia á función que se vai executar posteriormente.
 
-#### 6.4. HostListener
+### 6.4. HostListener
 A anotación HostListener asocian unha función a un evento se se produce no host que usa a directiva. Ten a seguinte sintaxe:
 ```typescript
 @HostListener('event', ['$event'])
@@ -493,31 +493,102 @@ nameFunction(){
 ```
 A anotación recibe dous parámetros. O primeiro é un string que representa o evento que se quere escoitas e que se produce no host que usa a directiva ou no documento en xeral. O segundo é un array de argumentos. No exemplo é unha referencia ao evento mesmo.
 
-#### 6.5. HostBinding
+### 6.5. HostBinding
 
 A anotación HostBinding detecta os cambios sufridos sobre unha propiedade de algún elemento. Para definila, hai que especificar a propiedade que se vai observar. Ten a seguinte sintaxe: `@Hostbinding('attr.role') role='main'`.
 
+## 7. Servizos
 
+Un srvizo é unha peza de código que xestiona a lóxica máis complexa da aplicación de xeito que queda fóra dos compoñentes das vistas. O servizos xestionan comunicacións externas, sesión, logs, lóxica de negocio, etc... Son clases que adoitan implementar o decorador Injectable, que se importa do core de Angular. Este decorador habilita que  a clase emita os datos necesarios para poder inxectar nos servizos as clases que foren necesarias.
 
+### 7.1. Inxección de dependencias.
+É un patrón de deseño a traves do cal podemos definir que outras clases van ser usadas por unha clase en concreto, no lugar de que sexa a propia clase a que crea explicitamente os obxectos no seu código.
+Os servizos son declarados no módulo correspondente en providers ou a través da configuración do decorador Injectable.
 
-PIPE
-	Predeseñadas : uppercase, lowercase
+### 7.2. Inxection de servizos en Angular
 
-DIRECTIVAS
-	Esquema que modifica os elemento do DOM
-	- de compoñente
-	- de estrutura html. 
-	- de atributos. 
+A inxeción de dependencias funcina de xeito xerárquico. O non se permiten duplicados dun servizo dentro dunha mesma xerarquía. Un módulo pode usar os servizos proveídos nos módulos superiores, pero non nos irmnáns.
 
-DIRECTIVAS DE ESTRUTURA 
-	ngIf. 
-	 	*ngIf=nome_da_variable
-	ngFor
-		*ngFor let elemento of lista_de_elementos
-	ngSwitch
-		[ngSwitch]="variable" 
-		*ngSwitchCase="value" 
-		*ngSwitchDefault
+### 7.3. O cliente http de Angular
+
+Consultar unha API require usar algunha tecnoloxía. Actualmente JS dispón no nativo fetch pero adimi o uso de librarías como AJAX, Axios ou outras. Angular ten o seu propio cliente http de serie. Considérase unha boa práctica encapsular as peticions http dentro de servizos.
+O procolo http establce as seguintes acctións:
+- get: obtén un recurso que pode ser un elemento único ou unha collección de elementos.
+- post: cre un recurso novo.
+- put: actualiza un recurso por completo.
+- patch: actualiza un recurso parcialmente.
+- delete: elimna un recurso.
+Para usar o cliente http de Angular hai que importar o módulo HttpClientModule, normalmente no AppModule:
+
+```typescript
+import { Module } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+
+@NgModule({
+	imports: [BrowserModule, HttpClientModule]
+})
+export class AppModule {}
+```
+Logo hai que importar a libraría HttpCliente no ser vizo que vai usar. O cliente proporciona observables e promesas.
+
+#### 7.3.1. Consumindo unha API
+
+Os observables requiren seren importados, mentres que as promesas nons. Aquí hai un exemplo de como usar ambos en Angular:
+```typescript
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+
+@Injectable()
+export class AppService {
+
+	constructor( private readondly http: HttpClient){}
+
+	// Observable
+	getItemsObservable(): Observable<Item[]>{
+		return this.http.get( /* url */ )
+			.pipe(
+				map( /* procesar os datos */ ),
+				catchError( /* procesar o erro */ )
+			);
+	}
+	// Promesa
+	getItemePromise(): Promise<Item[]>{
+		return this.http.get( /* url */)
+			.lastValue()
+			.then( /* procesar os datos*/ )
+			.catch( /* procesar o erro */);
+	}
+}
+```
+
+#### 7.3.2. Modificación de cabeceiras (headers)
+
+As cabeceiras xestiónanse coas clases HttpHeaders e HttpParams que se engaden á petición:
+```typescript
+export class AppService {
+	saveItem( item: Item): Observable: Item {
+		let headers = new HttpHeaders.set('Authorization', token);
+		let params = new HttpParams(). set('id', '1');
+		return this.http.post(url, item, { headers, params})
+			.pipe(
+				map( /* procesar os datos */ ),
+				catchError( /* procesar o erro */ )
+			);
+	}
+}
+```
+
+#### 7.3.3. Peticións non json
+
+O método http get pode recibir como segundo parámetro un obxecto de configuración que especifica o tipo de resposta.
+```typescript
+export class AppService {
+	getSoap():Observable<unknow>{
+		return this.http.get(url, { responseType: 'text'});
+	}
+}
+```
 
 
 INPUT
