@@ -499,7 +499,7 @@ A anotación HostBinding detecta os cambios sufridos sobre unha propiedade de al
 
 ## 7. Servizos
 
-Un srvizo é unha peza de código que xestiona a lóxica máis complexa da aplicación de xeito que queda fóra dos compoñentes das vistas. O servizos xestionan comunicacións externas, sesión, logs, lóxica de negocio, etc... Son clases que adoitan implementar o decorador Injectable, que se importa do core de Angular. Este decorador habilita que  a clase emita os datos necesarios para poder inxectar nos servizos as clases que foren necesarias.
+Un servizo é unha peza de código que xestiona a lóxica máis complexa da aplicación de xeito que queda fóra dos compoñentes das vistas. O servizos xestionan comunicacións externas, sesión, logs, lóxica de negocio, etc... Son clases que adoitan implementar o decorador Injectable, que se importa do core de Angular. Este decorador habilita que  a clase emita os datos necesarios para poder inxectar nos servizos as clases que foren necesarias.
 
 ### 7.1. Inxección de dependencias.
 É un patrón de deseño a traves do cal podemos definir que outras clases van ser usadas por unha clase en concreto, no lugar de que sexa a propia clase a que crea explicitamente os obxectos no seu código.
@@ -590,24 +590,194 @@ export class AppService {
 }
 ```
 
+## 8. Formularios en Angular
 
-INPUT
-	Decorador para entrada de datos nunha compoñente filla desde a compoñente nai
-	import { Input } from '@angular/core'
-	ts 		 		@Input('etiqueta') variable;
-	html parent 	[etiqueta]="valor"	
+En Angular existen dous tipos de formularios. Os formularios xestiónanse a través de plantillas ou **template driven** e os formularios reactivos ou **reactive forms**.
 
-OUTPUT
-	Decorador para a saida de datos nunha compñente nai desde a compoñente filla. Necesitamos crear un evento.
-	child 
-		ts		import { Output, EventEmitter } from angular core
-				@Output() variableEmitida = new EventEmitter<type>();
-				funcionEmitir(){this.variableEmitida.emit(dato emitido)}
-		html 	()=funcionEmitir()
+### 8.1. Template driven forms
+Son similares aos formularios convencionais. No controlador realízase un data binding dos coampos do formularios a´nosa plantilla, deixanso as validacións e modelos na vista.
 
-	parent
-		html 	 (variableEmitida)="funcionRecibir($event)"
-		ts 		funcionRecibir(e){ // e }
+#### 8.1.1. A directiva ngForm
+Dado o seguinte formulario
+```html
+<form>
+	<label>Nick:*</label>
+	<input type="text" name="id" placeholder="Este é o identificador">
+	<label>Nome completo:*</label>
+	<input type="text" name="fullName" placeholder="O teu nome de autor"> 
+	<label>Imaxe:</label>
+	<input type="url" name="imaxe">
+	<button type="submit">Rexistrar</button>
+</form>
+```
+
+Antes de trandormar este formulario, temos que importar o módulo FormsModule no módule, neste caso será no app.module:
+```typescript
+import { FormsModule } from '@angular/forms';
+
+@NgModule({
+	imports: [
+		FormsModule,
+		BrowserModule
+	]
+})
+export class AppModule {}
+```
+para poder usar o formulario de Angular o primeiro que hai que facer é enlazar ese formulario coa directiva ngForm tal que `<form #form="ngForm">`. Así creamos unha variable form na template sobre a exportamos ngForm e coa que podemos acceder ao valor do formulario coa sintaxe `{{form.value}}`. Polo momento é un obxecto valeiro porque non ten un modelo asignado.
+### 8.1.2. As directivas ngModel e ngModelGroup
+Para asignarlle un modelo ao formulario hai que usar a directiva ngModel que admite varias sintaxes:
+* ngModel: non aplicar ningun tipo de binding entre a vista e o controlador pero busca a propiedade name e asígnalle o valor da propiedade do memos nome ao obxecto do formulario:
+```html
+<form #form="ngForm">
+	<input type="text" name="id" placeholder="Este é o identificador" ngModel>
+</form>
+```
+Produce este efecto no modelo `{{form.value}}` -> `{id: ''}`
+* [ngModel]: Fai o binding unidireccional para asoaciar un valor desde unha variable do controlador á vista, pero non modifica o valor da variable cando se modifica o formulario. 
+```html
+<form #form="ngForm">
+	<input type="text" name="fullName" [ngModel]="author.fullName">
+</form>
+```
+Neste caso no controlador teremos un obxecto que se usará para inicializar o formulario:
+```typescript
+{
+	id: '1',
+	fullname: 'Author',
+	image: 'resource/images/icon.png'
+}
+```
+* `[(ngModel)]`: coñecido como two way data binding. Enlazado bidireccional. Cando se modifica un valor no formulario estase a modificar o obxecto correspondente no controlador. Engade complexidade á aplicación, porque está recollendo o valor do formulario en dous puntos, na variable form da template e na variable author do controlador.
+```html
+<form #form="ngForm">
+	<input type="text" name="fullName" [(ngModel)]="author.fullName">
+</form>
+```
+A maiores tamén podemos crear obextos complexos mediante as directvas ngMoldelGroup ao formulario con esta sintaxe:
+```html
+<form #form="ngForm">
+	<label>Nick:*</label>
+	<input type="text" name="id" placeholder="Este é o identificador" ngModel>
+	<div ngModelGroup="data">
+		<label>Nome completo:*</label>
+		<input type="text" name="fullName" placeholder="O teu nome de autor" ngModel> 
+		<label>Imaxe:</label>
+		<input type="url" name="imaxe" ngModel>
+	</div>
+	<button type="submit">Rexistrar</button>
+</form>
+```
+Esta sintaxe crea unha estrutura de datos complexa como a seguinte
+```js
+{
+	id: '1',
+	data: {
+		fullName: 'Author',
+		imaxe: 'resource/images/icon.png'
+	}
+}
+```
+### 8.1.3. Validacións e contro de erros
+#### Deshabilitar o botón submit
+O primeiro que queremos é validar se o conxunto do formulario está preparado para pode se enviado. Ten a propiedade `invalid` de `form`:
+```html
+<form #form="ngForm">
+	...
+	<button type="submit" [disabled]="form.invalid">Rexistrar</button>
+</form>
+```
+Un formlario pode ser válido `valid` ou non `invalid`. Un formulario será válido cando pasa todas as validacións que establezamos.
+
+#### Validar campos
+As validacións neste tipo de formularios é moi doada porque séguese o estándar HTML5:
+```html
+<form #form="ngForm">
+	<label>Nick:*</label>
+	<input type="text" name="id" placeholder="Este é o identificador" ngModel required>
+	<div ngModelGroup="data">
+		<label>Nome completo:*</label>
+		<input type="text" name="fullName" placeholder="O teu nome de autor" ngModel minLength="3" required> 
+		<label>Imaxe:</label>
+		<input type="url" name="imaxe" ngModel>
+	</div>
+	<button type="submit" [disabled]="form.invalid">Rexistrar</button>
+</form>
+```
+
+#### Control de erros
+En caso de que falle algunha validación hai que detectala. Isto conséguese mediante o control de erros. 
+Un erro nun input determinado conségue declarando unha variable local nova co mesmo nome que o input e que terá un obxecto errors
+```html
+<form #form="ngForm">
+	<label>Nick:*</label>
+	<input type="text" name="id" placeholder="Este é o identificador" ngModel required>
+	<div *ngIf="id.errors?.required && id.pristine" class="error-message">O nick é obrigatorio</div>
+</form>
+```
+O atributo `pristine` é unha propiedade do campo que nos dí se se modificou ou non.
+
+## 8.2 Reactive forms
+Os formularios reactivos son unha implementación que soluciona problemas que presentan os formularios _template driven_.
+
+### 8.2.1 ReactiveFormsModule
+A funcionalidade dos formularios reactivos impleméntase no módulo chamado ReactiveFormsModule que se debe importar nun módulo que corresponda. As principais librarías que se fan usar son FormBuilder, FormGroup e FormContro.
+
+#### FormBuilder
+Impos partir do fmulario anterior
+```html
+<form [formsGroup]="newUser">
+	<label>Nick:*</label>
+	<input type="text" name="id" placeholder="Este é o identificador" formControlName="id">
+	<div formGroupName="data">
+		<label>Nome completo:*</label>
+		<input type="text" name="fullName" placeholder="O teu nome de autor" formControlName="fullName"> 
+		<label>Imaxe:</label>
+		<input type="url" name="image" formControlName="image">
+	</div>
+	<button type="submit" [disabled]="form.invalid">Rexistrar</button>
+</form>
+```
+
+No controlador contruímos una xerarquía correspondente:
+```typescript
+this.newUser = this.fb.group({
+	id: [''],
+	data: this.fb.group({
+		fullName: [''],
+		image: ['']
+	})
+})
+```
+Como se pode ver hai unha correspondencia entre as directivas dos dos estilos
+
+template driven | reactive forms
+----------------|---------------
+ngForm			| formGroup
+ngModel 		| formControlName
+ngModelGroup	| formGroupName
+
+#### Validacións
+As validacións realízanse do ldao do controlador, usando a clase validators na definición de cada campo:
+```typescript
+this.newUser = this.fb.group({
+	id: ['', Validators.required],
+	data: this.fb.group({
+		fullName: ['', [Validators.required, Validators.minLenth(5)]],
+		image: ['']
+	})
+})
+```
+#### Control de erros
+O control de erros realizase ean template pero accedemos ao campos a través do modelo do foormulario e os métods get e hasError.
+
+#### submit
+O envío realízase capturando o evento submite na template
+
+```html
+<form [formsGroup]="newUser" (ngSubmit)="onSubmit()">
+	...
+</form>
+```
 
 RENDERER E LISTENER - Interactividade
 Render - Obxecto que permite manexar elmentos do DOM.
@@ -620,8 +790,6 @@ VIEWCHILD
 	@ViewChild('selector') elemento; 
 	Vistas herdadas. En Angular cada etiqueta de html considérase como unha vista. Cada elemento pódese identificar asignado un id coa sintaxe #selector. 
 
-INTERFACES
-	Modelo de datos (ao igual que unha clase) que inclúe métodos abstractos e propiedades constantes.
 
 ANIMÁCIÓNS
 	Similares ás animacións con css, pero se crean desde código ts. Deséñanse unha animación e cárgase no array animations na compoñente. Na vista establecese o trigger que o lanza.
@@ -735,6 +903,9 @@ SEO
 
 
 BOAS PRÁCTICAS 
+
+
+
 
 
 
