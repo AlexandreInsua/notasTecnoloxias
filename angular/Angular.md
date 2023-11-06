@@ -716,10 +716,10 @@ Un erro nun input determinado conségue declarando unha variable local nova co m
 ```
 O atributo `pristine` é unha propiedade do campo que nos dí se se modificou ou non.
 
-## 8.2 Reactive forms
+### 8.2 Reactive forms
 Os formularios reactivos son unha implementación que soluciona problemas que presentan os formularios _template driven_.
 
-### 8.2.1 ReactiveFormsModule
+#### 8.2.1 ReactiveFormsModule
 A funcionalidade dos formularios reactivos impleméntase no módulo chamado ReactiveFormsModule que se debe importar nun módulo que corresponda. As principais librarías que se fan usar son FormBuilder, FormGroup e FormContro.
 
 #### FormBuilder
@@ -779,6 +779,172 @@ O envío realízase capturando o evento submite na template
 </form>
 ```
 
+## 9. Rutas e navegación
+
+O módulo **Router** é a libraría que usa Angular qu se usa para implementar a nevegación a través da url na barra das aplicacións ao estilo das Single Page Aplications. Con isto pódese crear aplicacións complexas e renderizar compoñentes en función do contexto da aplicación.
+
+### 9.1. Rutas básicas
+
+O concepto básico consiste en asociar unha url e o compoñente que se vai renderizar. A configuración inicial parte da ruta base que debe estar definida no index.html asi
+```html
+<base href="/">
+```
+Para configurar as rutas debemos impotar o módulo de rutas e as rutas do paquete:
+```typescript
+import { RouterModule, Routes } from '@angular/router';
+
+const routes = [
+	{ path: '', component: HomeComponent};
+	{ path: 'about', component: AboutComponent};
+	{ path: '**', component: HomeComponent};
+]
+```
+Cada ruta recibe un path que identifica o patrón url ao que se fai referencia e un component que identifica o compoñente que se vai renderizar. A última ruta usa os asteriscos com comodín para redireccionar des unha ruta non rexistrada, polo que se usa como páxina de erro. O renderizado conséguite mediante a etiqueta `<router-outlet>` no html que habilitasmo para esa ruta.
+
+### 9.2. Enlazado a rutas
+
+O enlazado a rutas pódese facer no html midiante a directiva `routerLink`:
+```html
+<a routerLink="/" routerLinkActive="active">Home</a>
+```
+A través do routerLink podemos especificer o nome da ruata á que queremos acceder. A direciva routerLinkActive é opcional e agrega o seu valor ás clases css. 
+Outra forma de dirixir a unha ruta é facelo programaticamente no compoñente ts:
+```typescript
+import { Router } from '@angular/router';
+	// ...
+export class Component {
+	constructor(private readonly router: Router) {}
+	onClick(name: string){
+		this.router.navigate(['/hello'], name);
+	}
+}
+```
+A navegación coincide coa ruta "/hello/:name" on os ":" representa un parámetro 
+
+### 9.3. Snapshot e observables
+Angular habilita un xeito de obert os datos a partir da ruta mediante os snapshots e observables
+* Snapshots: usado cando se cambia du compoñente a outro. Tomamos o seguintes código:
+```typescript
+import { Component, Init } from '@angular/core';
+import { ActivatedRoute,  Params, Router } from '@angular/router';
+
+@Component(...)
+export  class Component {
+	id: string;
+	constructor(private readonly route: ActivatedRoute , private readonly router: Router )
+
+	ngOnInit() {
+		this.id = this.route.snapshot.params['id'];
+	}
+}
+```
+ActivateRoute é una clase que inclúe os seguintes campos:
+	- url: array cons fragmentos que conforman a ruta actual.
+	- data: obxecto onde pode gardar información seteada no resolver.
+	- params: array que contén os parámetros obrigatorios e optativos do path
+No exemplo anterior estamos usando a propiedade params para obter o id cada vez que se inializa o compoñente, pero no é reactivo aos cambios.
+
+* Observable: uar observables é necesario cando se produce cambios no compoñentes. Sexa o seguinte código:
+```typescript
+import { Component, Init } from '@angular/core';
+import { ActivatedRoute,  Params, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
+@Component(...)
+private class Component {
+	id: string;
+	
+	constructor(
+		private readonly route: ActivatedRoute,
+		private readonly router: Router
+	)
+
+	ngOnInit() {
+		this.route.params
+			.pipe(
+				switchMap((params: Params)=>params['id'])
+			)
+			.subcribe( 
+				(id: string)=> this.id = id;
+			)
+		
+	}
+}
+```
+Neste caso a variable id actualízase cada vez que se modifique o id da ruta.
+
+### 9.4. Redireccións
+Cando unha aplicación está estructurada en módulos xa non se pode manter as rutas centralizadas e debemos crear rutas a partir doutra rutas. Crear redireccións ou establecer accesos seguindo roles. Dada a ruta
+```typescript
+{
+	path: '',
+	redirectTo: '/home',
+	pathMatch: 'full'
+}
+```
+redirectTo fai referencia á ruta que queremos redirxir, cuxo valor inclúe a barra. patchMatch pode definir dous valores:
+- full: ten en conta a url tal cal e a compra co valor do path. Case de ser unha ruta filla hai que ter en cona a ruta pai.
+- prefix: ten en conta o valor de redirectTo como prefixo que se engade á comparación.
+
+### 9.5. Parámetros
+Cado se necesita introducir un parámetro nunha ruta úsase a sintaxe dos puntos para definila para cada ruta dentro da propiedade path: 'author/:id'. Pra definir varios parámetros úsase a sintaxe do punto e coma da matriz da url: /author;id=1;status=active. 
+Para setear os parámetros no método navigate pásaselle un segundo parámetro con eles:
+```typescript
+this.router.navigate(['/author'], author.id);
+this.router.navigate(['/author'], {id: author.id, status: 'active'});
+```
+
+### 9.6. Módulo de rutas
+
+Para manter a aplicación escalable convén centralizar a xestion das rutas nun módulo específico. Un módulo de rutas terá este aspecto: 
+```typescript
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+
+const routes: Routes = []
+@NgModule({
+	imports: [RouterModule.forRoot(routes)],
+	export: [RouterModule]
+})
+export class RouterModule {}
+```
+Este módulo impóstase no módulo principal
+
+### 9.7. Xestion independente de rutas
+Cada módulo pode xestionar a súas propisas rutas mediante a utilización do método forChild() un módulo especifico.
+	imports: [RouterModule.forChild(dashboardRoutes)],
+Este módulos de rutas impórtanse en cadanseu módulo da funcionalidade e estes no módulo principal.
+
+### 9.8. Rutas fillas
+Cando se necesia renderizar só unha parte de esta, pódse usar un segundo router-outlet. Para configuralo, hai que usar a propiedade children na módulo de rutas correspondente:
+```typescript
+{
+	path: 'profile',
+	component: ProfileComponent,
+	children: [
+		{
+			path: 'details',
+			component: DetailsComponent,
+		},
+		{
+			path: 'grants',
+			component: GrantsComponent,
+		}
+		
+	]
+}
+```
+Isto habilita colocar un router-outlet na template de ProfileComponent que reacciona illadamente ao cambio de ruta. Así obtemos un maior rendemento da aplicación. 
+
+### 9.9. Engadindo gardas
+Para xestionar gardas de rutas hai que crar unha garda, que é un servizo que implementa a iterfaz CanActivate. Esta función devolve un booleano.
+No ficheiro de configuración de rutas, para a ruta que se vai proterxer hai que setear a propiedade CanActive que recibe un array de gardas. A propiedade CanActivateChild aplícase ás rutas fillas. CanDeactivate é unha configuración especial que controla a saída duna ruta cara outra.
+
+### 9.10. Resolves
+resolve é un propiedade que proporciona datos e os carga na ruta antes de que se navegue a ela.
+
+## Notas previas
 RENDERER E LISTENER - Interactividade
 Render - Obxecto que permite manexar elmentos do DOM.
 
@@ -903,6 +1069,8 @@ SEO
 
 
 BOAS PRÁCTICAS 
+
+
 
 
 
