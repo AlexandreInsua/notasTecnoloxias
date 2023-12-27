@@ -180,3 +180,33 @@ let list = Inmutable.list([todo1]);
 ```
 
 A lista implementa toda a API das array, pero de tal xeito que son métodos inmutables, polo que non modifican a lista preexistente, senón que devolve un obxecto con outra referencia de memoria.
+
+# NGRX
+
+NGRX é unha libraría que axuda a xestionar o estado da aplicación de xeito estandarizado e proporciona unha aproximación a unha arquitectura predeterminada para sextionar o estado. O punto de partida é o Store o lugar onde os datos se gardan e manexan.
+Opcionalmente podemos ter Sletor que len parte dos datos e os extraen do store para sern usados por un compoñente.
+Para cambar os datos no almacén os compoñentes deben despachar accións que descrien os cambios que se deben facer no estado. Estas accións son recollidas polos redutores, que implementan a lóxica dos cambios.
+O elemento final son os efectos, que son efectos colaterais que son disparados por determinadas accións.
+
+## Crear un almacén
+
+Nunha carpeta separada definiremos os ficheiros específicos que teñen que ver con NGRX.
+O primeiro paso será crear un reducer para establecer o estado inicial do store. Trátase dun ficheiro que creua un reducer. É unha función que recibe o estado inicial da app e exporta o reducer creado. Este reducer pásase ao StoreModule ou provideStore() para standalone appp. O store está creao e pódese importar nos compoñentes que o necesitan. O datos recupéranse co método select() do obxecto store que devolve observables.
+
+## Modificando os datos
+
+Para modificar o estado necesitamos despachar accións. Na carpeta store créase un ficheiro para as acciósn data.actions.ts créase coa función createAction e definimos as accións que se poden disparar indicando o seu id, que se rexistrará no reducer correspondente. Cando se rexistra no reducer mediante o método on(action, state => new state) hai que ter en conta que non se modifica o estado previo, senón que se cra un novo e reemprázase o anterior.
+
+Para despachar unha acción úsase o método dispatch do store. As acción poden levar datos anexos agregando un segundo argumento props durante a declaración da acción. No reducer recupérase como segundo parámetro no rexistro. Finalmente, cando se despacha a acción, recibe un valor como argumento da accion mesma.
+
+## Selectors
+
+Son unha extensión para seleccionar unha parte do estado. TAmén parmite crear selectores compostos.
+
+## Effects
+
+Os effects son efectos colaterais disparados por unha acción que non están relacionado co cambio de estado ou a UI. Tipicamente son peticións http, cambios no localStorage ou logueo por console. como as funcións dos reductores son síncronas, hai que procuar mantelas o máis simples posible e desde logo nunca implementar un mecanismo asíncrono.
+
+Para implementar os effects, hai que importar un paquete adicional @ngrx/effectsque importa un módulo específico ou modificar o main.ts.
+
+Os efectos defínense nn nun ficheiro separado como boa práctica. Un efecto é una clase que crea unha propiedade coa función createEffect que permite filtrar as accións que o disparan. Tamén se podo configurar para dispare unha acción cando se completa. As clases de efectos hai que pasarlle ao EffectModule ao provideEffects.
