@@ -240,6 +240,156 @@ export class MyComponent implements OnInit {
 }
 ```
 
+## 3B. Aplicacións sen módulos
+
+A estruturación en módulos achega a Angular unha grande modularidade mais presenta como contraparte bastante código repetitivo. Ademais, a medida que os módulos se van reproducindo diminúe a covertura de test porque son meras importacións e exportacións.
+Outros frameworks non usan algo como módulos polo que Angular ten unha desvantaxe. O elementos autónomos (standalone) intentan superar isto. O compoñentes standalone teñen unha flag no obxecto de configuración do compoñente onde o valor por defecto é false, daquela:
+
+```typescript
+@Component({
+ standalone: true,
+ selector: "app-home",
+ templateUrl: "./home.component.html",
+ styleUrls: ["./home.component.css"]
+})
+```
+
+Un compoñente autónomo **non** pode ser declarado dentro dun módulo. Cando se migra un compoñente a un autónomo hai que ter ollo se é usado noutro compoñente se é usado notro compoñente. O consumidor non saberá onde buscalo, polo que hai que dicirllo mediante a propiedade imports no obxecto de configuración onde do importará (tamén pode importar módulos):
+
+```typescript
+import { DetailsComponent } from "./details.component";
+
+@Component({
+ standalone: true,
+ imports: [DetailsComponent]
+ selector: "app-home",
+ templateUrl: "./home.component.html",
+ styleUrls: ["./home.component.css"]
+})
+```
+
+Pero isto só funcionará se o consumidor é tamén un compoñente standalone. Se non o é a solución transitoria é importar o compoñente no módulo correspondente. Se o _home.component_ non fose a propiedade standalone o módulo quedaría tal que así:
+
+```typescript
+@NgModule({
+ declarations: [AppComponent, MainComponent],
+ imports: [BrowserModule, DetailsComponent],
+ boostrap: [AppComponent]
+})
+```
+
+O mesmo ocorre coas directivas e as pipes. Poden ser convertidas en standalone coa flag e ser importadas por outros elementos standalone directamente ou ser importadas en módulos de Angular para ser consumidas en compoñentes modulares
+
+A medida que se van transformando os compoñentes dun módulo en standalone este vai quedando máis valeiro e chega un momento en que se pode eleminar.
+
+### 3B.1 O AppComponent
+
+O AppComponent pode ser standalone pero implica un cambio adicionalmente. Com non ode ser declarado no AppModule non se pode usar a propiedade de arranque. Temos que cambiar a inicialización da aplicación e iso faise no ficheiro _main.ts_. Cambia a súa sintaxe para iniciar desde un compoñente en lugar dun módulo:
+
+```typescript
+import { enableProModule } from "@angular/core";
+import { bootstrapApplication } from "@angular/platform-browser";
+import { AppComponent } from "./app/app.component";
+import { enviroment } from "./enviroment/enviroment";
+
+if (enviroment.production) {
+  enableProModule();
+}
+
+boostrapApplication(AppComponent);
+```
+
+### 3B.2 Servizos e compoñentes standalone
+
+Hai varios esceanarios posibles:
+
+- Cando un servizo ten seteadas a propiedade `provideIn: 'root'` xa é fornecido na raíz da app e pode ser inxectada en calquera compoñente autónomo. Por tanto, non se require facer ningún axuste.
+- Caso de o servizo estar declarado no array de providers dun módulo. No compoñente (ou Pipe ou Directive) que usa o servizo póse engadir un array de providers. Como contrapartida, teremos unha instancia por cada declaración do servizo.
+- O terceiro escenario é migrar o servizo do array de providers do _app.module.ts_ ao _main.ts_ A función _bootstrapApplication_ ten como segundo parámetro un obxecto de configuración que pode recibir un array de providers tal que:
+
+```typescript
+bootstrapApplication(AppComponent, { providers: [MyService] });
+```
+
+### 3B.3 Routing e compoñentes standalone
+
+Dado que xa non hai AppModule, hai que habilitar o enrutado doutro xeito. Para isto impórtase o RouterModule no AppComponent (que agora é standalone). O segundo paso é pasarlle as rutas. Isto faiso no _main.ts_, incorporando nos providers a función _importProvidersFrom_ que recibe o módulo de rutas:
+
+```typescript
+bootstrapApplication(AppComponent, {
+  providers: [importProvidersFrom(AppRoutingModule)],
+});
+```
+
+Tamén se podes proveer de varlores e servizos para seren usados en toda a aplicación:
+
+```typescript
+bootstrapApplication(AppComponent, {
+  providers: [
+    importProvidersFrom(AppRoutingModule),
+    { provide: BACKEND_URL, USEvaLUE: "https://backend-service.com/api/v1" },
+  ],
+});
+```
+
+As funcións con prefixo _provide_ poden seren usadas para configurar diferentes sistemas sen necesidade de importar módulos:
+
+```typescript
+bootstrapApplication(AppComponent, {
+  providers: [provideRouter([ROUTES])],
+});
+```
+
+Nas rutas hai que importar os compoñentes (ou módulos antigos) e iso pode facerse sincronicamente ou en modo lazy load:
+
+sincronicamente:
+
+```typescript
+{
+ path: 'about',
+ component: AboutComponent
+}
+```
+
+lazy load:
+
+```typescript
+{
+ path: 'about',
+ loadComponent: ()=> import('./about/about.component').then( c => c.AboutConmponent)
+}
+```
+
+Como os módulos de rutas tamén desaparecen, necesitamos cambiar as rutas como unha constante exportada que despois se importa no AppRoutingModules:
+
+```typescript
+{
+ path: 'dashboard',
+ loadComponent: ()=> import('./dashboard/routes').then( r => r.DASHBOARD_ROUTES)
+}
+```
+
+Se un routing module ten rutas fillas, o compoñente principal debe importar o router module para saber como xestionalas, porque está usando a directiva routerLink no html que esta definida nese módulo.
+
+### 3B.4 varios
+
+Se unha libraría de tercieros non foi actualizada para implementar unha función provide pódse usar a función importProvidersFroms para implamentala:
+
+```typescript
+import { LibraryModule } from "ng-moudule-based-library";
+
+{
+  bootstrapApplication(AppComponent, {
+    providers: [MyService, importProvidersFrom(LibraryModule.forRoot)],
+  });
+}
+```
+
+### 3B.5 Referencias
+
+Hai dúas guías de developing. Para facer a migración hai un schematics:
+`ng generate @angular/core:standalone`
+
 ## 4. Enlazado de datos
 
 ### 4.1. Data binding (enlazado de datos) en Angular
@@ -1360,7 +1510,7 @@ PROBAS DE INTEGRACIÓN
 
 PROBAS E2E
 
-# ACTUALIZAR VERSIÓN ANGULAR (GLOBAL)
+## ACTUALIZAR VERSIÓN ANGULAR (GLOBAL)
 
 1. Desinstalar os paquetes anteriores de Angular Cli. `npm uninstall -g @angular/cli`
 
@@ -1370,7 +1520,7 @@ PROBAS E2E
 
    2020.07.30. Actualizo a versión 12.1.4. Saen 3 warnings. Creo un proxecto de cero parace ir ben.
 
-# ACTUALIZAR PROXECTO
+## ACTUALIZAR PROXECTO
 
 Para actualizar un proxecto o mellor é ir actualizando de versión a versión. A web de Angular ten unha sección específica.
 
@@ -1386,7 +1536,7 @@ Actualizo un proxecto de 10 a 11.
 Actualizao un proxcto de 11 a 12.
 Na versión 12 cambia a compilación a produción a `ng build --configuration production`.
 
-# NOTAS ANGULAR
+## NOTAS ANGULAR
 
 ## Actualizar Angular
 
@@ -1397,7 +1547,7 @@ Actualizar Angular globalmente
 Actualizar proxecto de Angular. Seguir as instrucións da guía de actualización oficial en
 [Angular Update Guide](https://update.angular.io/).
 
-# REFERENCIAS
+## REFERENCIAS
 
 Moldeo Interactive Angular en español
 ://www.youtube.com/watch?v=k1uM6YeEx6g&list=PLHgpVrCyLWApLDoezmOfrUXb-IMoDs5Ls&index=1
