@@ -1,18 +1,18 @@
 # A reactividade en Angular
 
-##  O concepto de Stream e de Observable
+## O concepto de Stream e de Observable
 
 Como o Frontent é inherentemente asíncrono, necesitamos ferramentas para implementalo. Un **Stream** (_fluxo_) é un un conxunto de valores no tempo. Pode ser un conxunto de valores emitidos por unha API ou de eventos ocorridos no navegador ou como resultado da execución de ferramentas da web API estándar. Todo o que sucede no navegador é subsceptible de ser tratado como un stream.
 
 Necesitamos un xeito de crear streams, subscribirmonos a eles, reaccionar a novos valores e combinar fluxos para construír novos streams.
 
-Un Observable é un tipo de datos primitivo que implementa unha API como un array, incluíndo métodos funcionais, per é diferente dun stream.
+Un Observable é un tipo de datos primitivo que implementa unha API como un array, incluíndo métodos funcionais, pero é diferente dun stream. Precisamente, é unha abstracción uqe permite manexar streams de datos.
 
-Por tanto _Streams_ e _Observables_ snon son os mesmos. Un _Stream_ é unha secuencia continua de datos, mentres que un _Observable_ é unha abstracción que represnta un fluxo de datos asíncronos que pode emitir un ou varios valores, é un xeito de acceder a un stream e necesita se subscrito para ser usado. Por convención, os nomes dos observables en Angular teñen un signo do dólar ao final. 
+Por tanto _Streams_ e _Observables_ snon son os mesmos. Un _Stream_ é unha secuencia continua de datos, mentres que un _Observable_ é unha abstracción que represnta un fluxo de datos asíncronos que pode emitir un ou varios valores, é un xeito de acceder a un stream e necesita ser subscrito para ser usado. Por convención, os nomes dos observables en Angular teñen un signo do dólar ao final.
 
 ## Intro a RxJs
 
-**Reactive Extensión for JavaScript** (_RxJs_) é unha librería que implementa observables par Js. Por exemplo, o fluxo de datos `0, 1, 2, 3, 4`, emitido un valor cada segundo implementado usando RxJs é 
+**Reactive Extensión for JavaScript** (_RxJs_) é unha librería que implementa observables par Js. Por exemplo, o fluxo de datos `0, 1, 2, 3, 4`, emitido un valor cada segundo implementado usando RxJs é
 
 `const obs = interval(1000).pipe(take(5))`
 
@@ -28,17 +28,17 @@ A idea principal consiste en construír programas declarativos onde o estado est
 
 Hais dous tipos de observables
 
-* **Cold** (_frío_): non xera valores se non ten ningunha subscrición activada.
-* **Hot** (_quente_): xera valores aínda que non teña ningunha subscrición activada.
+- **Cold** (_frío_): non xera valores se non ten ningunha subscrición activada.
+- **Hot** (_quente_): xera valores aínda que non teña ningunha subscrición activada.
 
-Un Observable pode ser compartido ou non. 
+Un Observable pode ser compartido ou non.
 
-##  Operadores de RxJs máis usados
+## Operadores de RxJs máis usados
 
 Angular usa os operadores de RxJs de dous xeitos:
 
-* Como un mecanismo de implementación interna, como pode ser os EventEmiters, Subject, BehaviorSubject, etc...
-* Como parte dalgunha API pública, como formularios ou as peticións do módulo de HTTP.
+- Como un mecanismo de implementación interna, como pode ser os EventEmiters, Subject, BehaviorSubject, etc...
+- Como parte dalgunha API pública, como formularios ou as peticións do módulo de HTTP.
 
 ### Map
 
@@ -57,7 +57,7 @@ observable$.subscribe(
 
 ### Filter
 
-Toma os valores dun observable e devolve outro observable que emite aqueles valores  oaqueles que satisfagan unha condición xestionada por unha función que recibe como parámtro:
+Toma os valores dun observable e devolve outro observable que emite aqueles valores oaqueles que satisfagan unha condición xestionada por unha función que recibe como parámtro:
 
 ```TypeScript
 const observable$ = interval(500)
@@ -111,11 +111,11 @@ const observable$ = interval(500)
                             tap( i => console.log("obs value " + i))
                         )
 observable$.subscribe(
-    val => console.log("Observer 1 " + val); 
+    val => console.log("Observer 1 " + val);
 );
 
 observable$.subscribe(
-    val => console.log("Observer 2 " + val); 
+    val => console.log("Observer 2 " + val);
 );
 ```
 
@@ -133,7 +133,8 @@ Observer 2 value 1
 ...
 ```
 
-O operador share permite compartir unha subscrición de unha cadea de procesamoento con outros subscritores: 
+O operador share permite compartir unha subscrición de unha cadea de procesamoento con outros subscritores:
+
 ```TypeScript
 const observable$ = interval(500)
                         .pipe(
@@ -142,11 +143,11 @@ const observable$ = interval(500)
                             shareReplay()
                         )
 observable$.subscribe(
-    val => console.log("Observer 1 " + val); 
+    val => console.log("Observer 1 " + val);
 );
 
 observable$.subscribe(
-    val => console.log("Observer 2 " + val); 
+    val => console.log("Observer 2 " + val);
 );
 ```
 
@@ -162,12 +163,12 @@ Observer 2 value 1
 ...
 ```
 
-
 ### O operador concat
 
-O operador contat realiza varias peticións ao mesmo tempo. Recibe varios observables e devolve un só. Agarda a que o observable se complete antes de pasar ao seguiten. 
+O operador contat realiza varias peticións ao mesmo tempo. Recibe varios observables e devolve un só. Agarda a que o observable se complete antes de pasar ao seguiten.
+
 ## Tratamento de erros
+
 O operador `catchError()` captura un erro no observable para ser manexaod retornando outro observable ou lanzando un erro.
 
-O operator `throwError()`crea un observable que creará un ero e o enviará ao consumidor inmediatamente despois da subscrición. 
-
+O operator `throwError()`crea un observable que creará un ero e o enviará ao consumidor inmediatamente despois da subscrición.
