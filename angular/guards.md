@@ -8,7 +8,7 @@ Como o BE é una API a técnica que se aplica radica no uso dun token de autenti
 
 ## Guards en Angular
 
-Necesitamos un sisteme de gardas para as rutas en Angular. Un Guard é un servizo que implementa a interface CanActivate. Esta implementa un método `canActivate()` que manexa a lóxica para decidir se se permite navegar a unha ruta que necesita autorización ou redirixir a outra segura.
+Necesitamos un sistema de gardas para as rutas en Angular. Un Guard é un servizo que implementa a interface CanActivate. Esta implementa un método `canActivate()` que manexa a lóxica para decidir se se permite navegar a unha ruta que necesita autorización ou redirixir a outra segura.
 
 Un exemplo de garda de logo que sevolver se hai un usuario logueado poderá ser algo como este:
 
@@ -29,6 +29,7 @@ export class AuthGuard implements CanActivate {
     }
 }
 ```
+
 Necesita o operador `take(1)` para asegurarse de que non hai comportamentos estraños por recibir emisións diferentes do observable.
 
 Despois no ficheiro de rutas, actívase a garda mediante a propiedade `canActivate`:
@@ -41,7 +42,7 @@ Despois no ficheiro de rutas, actívase a garda mediante a propiedade `canActiva
 ```
 
 Unha alternativa na garda pode ser devolver unha ruta completa. Neste caso para cando non se está logueado redirixe ao compoñente de autentificación:
+
 ```Typescript
     return !!user || this.router.createURL(['auth'])
 ```
-
