@@ -876,7 +876,7 @@ export class AppModule {}
 
 para poder usar o formulario de Angular o primeiro que hai que facer é enlazar ese formulario coa directiva ngForm tal que `<form #form="ngForm">`. Así creamos unha variable form na template sobre a exportamos ngForm e coa que podemos acceder ao valor do formulario coa sintaxe `{{form.value}}`. Polo momento é un obxecto valeiro porque non ten un modelo asignado.
 
-### 8.1.2. As directivas ngModel e ngModelGroup
+#### 8.1.2. As directivas ngModel e ngModelGroup
 
 Para asignarlle un modelo ao formulario hai que usar a directiva ngModel que admite varias sintaxes:
 
@@ -949,7 +949,7 @@ Esta sintaxe crea unha estrutura de datos complexa como a seguinte
 }
 ```
 
-### 8.1.3. Validacións e contro de erros
+#### 8.1.3. Validacións e contro de erros
 
 #### Deshabilitar o botón submit
 
@@ -1098,6 +1098,99 @@ O envío realízase capturando o evento submite na template
 
 ```html
 <form [formsGroup]="newUser" (ngSubmit)="onSubmit()">...</form>
+```
+
+### 8.3 Formularios estritamente tipados
+
+As versións iniciais de Angular non eran completamente seguras en canto a tipado seguro polo que o valor emitido por un formulario era de tipo _any_ e o formulario non tiña moita información sobre o tipo de dato de cada control.
+
+Por tanto era doad atopar erros típicos de seguridade de tipos ao escribir formularios de Angular. A partir de Angular 14 incluía unha funcionalidade de segguridade de tipo que permiten ter mensaxes de error útiles e de autocompletado traballando con valores. Non é necesario definir valores personalizados, senón con cambios pequenos no código.
+
+O mellor xeito de usar formularios tipados
+
+Tomamos como exemplo un formulario de login
+
+```ts
+export class LoginComponent {
+	form = this.fb.group({
+		email: ["", {Validators: {Validators.required, Valitadors.email}}],
+		password: ["", {Validators: {Validators.required, Valitadors.minLenght(8)}}]
+	})
+
+	constructor(private fb: FormBuilder){}
+
+	login(){}
+}
+```
+
+Aquí declaramos un formulario. A seguridade de tipos xa está funcionando. Porque? porque o compilador de TypeScript ten un mecanismo de inferencia de tipos. Está a inforerir os nomes dos campos e os seus tipos a partir do valor inicial de cada campo. No caso anterior, considérase os campos nullable e tipo é string | null. Isto ocorre cando se usa o FormBuilder
+
+Erros comúns nos fomrulario tipados.
+Un erro moi común é delcara as variables com se tivesen un tipo FormGroup explícito, tal que:
+
+```ts
+export class LoginComponent implements OnInit {
+	form: FormGroup;
+	constructor( private fb: FormBuilder) {}
+
+	ngOnInit(){
+		this.form = this.fb.group({
+			email: ["", {Validators: {Validators.required, Valitadors.email}}],
+			password: ["", {Validators: {Validators.required, Valitadors.minLenght(8)}}]
+		})
+	}
+
+}
+```
+
+Este patrón declara unha varialble tipada e inicializada no OnInit está ben establecida pero non funciona correctamente. O autocompletado nons está disponible e tampouco temos as mensaxes de error cando se asignar valores erróneos.
+
+Por que non funciona?
+
+Este xeito de declara o formuario está tipado como FormGroup<any> polo que se suspende a comprobación de tipso, polo que a seguridade de tipos está desactivada. Para resolverlo hai que declarar a variable com ao inicio da sección.
+
+Por que non hai que declarar tipso extra?
+
+Par facer formularios con tipado seguro, tampoco hai que declara un tipo como
+
+```ts
+form: FormGroup<{email: FormGroup<string<{email:FormControl<string|null>, passsword: FormControl<string|null>}>>}>
+```
+
+isto non é necesario. É máis flexibe e menos verboso confiar na inferencia de tipos.
+Tampouco é necesario cambiar as API don constructor:
+
+```ts
+form = new formGroup({
+	email: new FormGroup<string | null>("", {Validators: {Validators.required, Valitadors.email}}),
+	password: new FormGroup<string | null("", {Validators: {Validators.required, Valitadors.minLenght(8)}})>
+});
+```
+
+Isto non é incorrecto, para a api de builder é igual de segura pero menos verboso.
+
+Como declarar campos nullos
+
+Por defecto os camso son consideraros nulos. Cando se chama o método reset() de form Angular porá todos os camops como nulos. Tamén se pode setear un campo como non nullable mediante a propiedade nonNullbre a true. Cando se resetea o formulario o c campo será seteado ao valor inicial:
+
+```ts
+	email: new FormGroup<string | null>("", {Validators: {Validators.required, Valitadors.email}, nonNullable: true}),
+```
+
+ou mellor usar a apis de builder:
+
+```ts
+	form = this.fb.group({
+		email: this.fb.nonNullable.control(["", {Validators: {Validators.required, Validators.email}}]),
+		password: ["", {Validators: {Validators.required, Validators.minLenght(8)}}]
+	})
+```
+
+O servico NonNullableFormBuilder
+Para o caso de formularios longos onde todos sos campos son non nullos en lugar do builder habitual úsase o NonNullableFormbuilder:
+
+```ts
+	constructor(private fb: NonNullableFormbuilder);
 ```
 
 ## 9. Rutas e navegación
