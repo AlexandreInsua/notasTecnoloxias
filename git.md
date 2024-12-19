@@ -62,7 +62,7 @@ A configuración mínima exixe setear o nome de usuario e o correo electrónico.
 
 `git config --global user.name "[username]"`. Configuración global de usuario.
 
-`git config --global user.mail "[mail]"`. Configuración global de correo electrónico.
+`git config --global user.email "[mail]"`. Configuración global de correo electrónico.
 
 `git config --global core.editor "[editor]"`. Configura o editor por defecto. E.g.: para notemap++ `git config --global core.editor "notepad++ -multiInst -no-session"`.
 

@@ -6,12 +6,13 @@ Postman é un cliente API para desenvlver, testear, compartir e documentar APIs.
 
 ## Peticións (Requests)
 
-Unha petición (_request_) é una petición http contra un endpoint dun servidor. As principais son 
+Unha petición (_request_) é una petición http contra un endpoint dun servidor. As principais son
+
 - GET. Pide datos dun recurso.
 - POST. Crea un novo recurso cos datos que se pasan como parámetro.
 - PUT. Actualiza un recurso por completo cos datos que se pasan como parámetro.
 - PATCH. Actualiza un recurso parcialmente cos datos que se pasan como parámetro.
-- DETELE. Elimina un recurso.
+- DELETE. Elimina un recurso.
 - HEAD. Pide a cabeceira dun recurso.
 
 ## Coleccións
@@ -52,7 +53,7 @@ Os espazos de traballo son áreas onde se agrupan, organizan e xestionan colecci
 
 ## Data Driving Testing
 
-A partir de ficheiros csv oujson pódense executar peticións. É unha opción disponible cando se executa unha colección. Para os csv a primeira liña é o nome das variables e o resto son valores para cada petitión. O json debe ter un array de obxectos chave valor. Nos tests hai que usar a sintase `data.property` e `data.key`  ou `data["property"]` e `data["key"]`. As collecctións pódense executar remotamente a traves duna url que se crea a traves do boton share e usando Newman para tal fin.
+A partir de ficheiros csv oujson pódense executar peticións. É unha opción disponible cando se executa unha colección. Para os csv a primeira liña é o nome das variables e o resto son valores para cada petitión. O json debe ter un array de obxectos chave valor. Nos tests hai que usar a sintase `data.property` e `data.key` ou `data["property"]` e `data["key"]`. As collecctións pódense executar remotamente a traves duna url que se crea a traves do boton share e usando Newman para tal fin.
 
 ## Peticións SOAP
 
