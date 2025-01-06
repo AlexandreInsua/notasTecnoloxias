@@ -1193,6 +1193,120 @@ Para o caso de formularios longos onde todos sos campos son non nullos en lugar 
 	constructor(private fb: NonNullableFormbuilder);
 ```
 
+### 8.4. Form array (formularios reactivos)
+
+Técnica para engadir ou eliminar controis dun formulario en tempo de execución.
+
+#### 8.4.1. Definición
+
+Cada formulario ten un modelo definido a través das API de FormControl, FormGroup ou FormBuilder. Normalmente os campos son coñecidos de antemán polo que se pode definir estaticamente. Cand necesitamos construír un fomrulario dinámico, por exemplo, cando o formulario pode agregar ou quitar controis, reaccionar a datos do BE ou crear unha táboa editable. Para iso usamos un form array.
+
+#### 8.4.2. Diferenzas entre Form Array e Form Group
+
+No caso de uso dunha táboa editable in situ, descoñecemos o número de controis de antem´n, porque non sabemos cantas filas via ter a táboa. O usuario pode engdir ou eliminar filas. Como non se pode definir un FormGroup, usamos un FormArray. Ao igual que o FormGroup, é un contenedor de controis que agrega os valores e estados de validez dos seus compoñentes fillos, pero non requires que coñezamos todos os controis, así como os seus nomes. Por ter un número indeterminado de contris empezando por cero. Os controis engádense ou elimínanse dinamicamente. Cada control ten un índice en lugar do nome.
+
+#### 8.4.3. A API de FormArray
+
+Estes son os métodos disponibles na api:
+
+- controls: devolve un array que content todos os controis.
+- lenght: devolve a lonxitude do array.
+- at(index): devolve un controla nunha posición determinada.
+- push(control): engade un control no final do array.
+- getRowValue(): devolve o valor de todos os controis a traves da propiedade control.value de cada control.
+
+#### 8.4.4. Exemplo de código
+
+Definimos un modelo para o formulario
+
+```typescript
+@Component({
+  //...
+})
+export class FormArrayExampleComponent {
+  form = this.fb.group({
+    lessons: this.fb.array([]),
+  });
+
+  cosntructor(private fb: FormBuilder) {}
+
+  get lessons() {
+    return this.form.controls["lessons"] as FormArrray;
+  }
+}
+```
+
+Como exemplo queresmo incluír na táboa dous controis, un para o título e outro para o nival das leccións. Queremos que estes campos fomen parte do formulario principal e afecten ao seu estado de validez. Para isto crearemos un FormGrupo para cada fila cos seus propios validadadores:
+
+##### Engadindo controis
+
+Creamos un botón para engadir un control
+
+```html
+<button mat-mini-fab (click)="addLesson()">
+  <mat-icon class="add-course-btn">add</mat-icon>
+</button>
+```
+
+e a continuación a función:
+
+```typescript
+addLesson(){
+	// mantemos a constante por lexibilidade
+	// pero se pode prescindir e optimizar
+	const lesson = this.fb.group({
+		title:['', Validators.required],
+		level:['beginner', Validators.required]
+	})
+
+	this.lessons.push(lesson)
+}
+
+// refactorizado
+	this.lessons.push(this.fb.group({title:['', Validators.required],level:['beginner', Validators.required]}))
+```
+
+eliminado o control
+
+```typescript
+deleteLesson(lessonIndex:number){
+	this.lessons.removeAt(lessonIndex);
+}
+```
+
+e aquí a template:
+
+```html
+<h3>Add course lessons</h3>
+<div class="add-lessons-form" [formGroup]="form">
+  <ng-container formArryName="leesons">
+    <ng-container *ngForm="let lesson of lessons.control; let i=index">
+      <div class="lesson-form-row" [formGroup]="lessonForm">
+        <mat-form-field appearance="fill">
+          <input mat-input formControlName="title" placeholder="Lesson title" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-select formControlName="leven" placeholder="Lesson Level">
+            <mat-option value="beginner">Beginner</mat-option>
+            <mat-option value="intermediate">Intermediate</mat-option>
+            <mat-option value="advanced">advanced</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-icon class="detele-btn" (click)="deleteLesson()"
+          >delete_forever</mat-icon
+        >
+      </div>
+    </ng-container>
+  </ng-container>
+  <button mat-mini-fav (click)="addLesson">
+    <mat-icon class="add-course-btn">add</mat-icon>
+  </button>
+</div>
+```
+
+Como se pode ver, estamos usando as directivas formArrayName e formControlName
+para enlazaar o elemento html coa propiedade correspondente.
+
 ## 9. Rutas e navegación
 
 O módulo **Router** é a libraría que usa Angular qu se usa para implementar a nevegación a través da url na barra das aplicacións ao estilo das Single Page Aplications. Con isto pódese crear aplicacións complexas e renderizar compoñentes en función do contexto da aplicación.
@@ -1661,7 +1775,7 @@ https://www.digitalocean.com/community/tutorials/angular-angular-and-leaflet
 
 ## INXECCIÓN DE DEPENDENCIAS
 
-## A función inject
+### A función inject
 
 A partir da versión 14 (xuño 22) hai un novo xeito de inxectar dependencias nos compoñentes: trátase de usar a función `inject()` que se importa do core.
 
@@ -1788,7 +1902,7 @@ Esta arquitectura ten os seguines problemas:
 4. Propiedades personalizadas de 3ª parte. Hai sistemas de terceiros que esperan ceras propiedades, como datos `data-` que necesitan ser soportadas.
 5. O **quid** é que estamos ocultando o input nativo dentro da template do compoñente. Estamos creando unha barreira entre a template externa que coñece as propiedades personalizadas e o input nativo que as debe utilizar.
 
-## Uso da proxección de contido
+### Uso da proxección de contido
 
 Para poder proxecta o contido, refactorizaremos o compoñente pai para que inclúa o contido que se proxectará no compoñente fillo. Por tanto, incluímos o input nativo como elemento de contido (_content element_):
 
@@ -1873,7 +1987,7 @@ Introducimos o prefixo `:host` para que os estilos se apliquen dentro deste comp
 
 Deste xeito os estilos manteñen o alcance do compleñent `fa-input` pero se filtrán a calquera input dentro do compoñente en tempo de execucion, incluíndo o input nativo proxectado.
 
-## Interacción con contido proxecto
+### Interacción con contido proxecto
 
 Para simular a funcionalidade do foco necesitamos que o fa-input coñesa se o input proxecto ten o foco ou non. Como non se pode interactuar directamente coa etiqueta ng-content, aplicamos unha directiva personalizada (que chamaremos inputRef) no input orixinal.
 
@@ -1952,7 +2066,7 @@ export class FaInputComponent{
 
 Como se pode ver, úsase o decorador `@ContentChild` para inxectar a directiva dentro do compoñente polo que o valor do campo input obtense desa directiva. Por outra parte, o decorador `@HostBinding` estamos seteando a clase css `focus` que define o estilo para o evento onFocus. Con esta implementación temos un compoñente funcional, que sopora as propiedades nativas hatem, a accesibilidade, as propiedades de terceiros e a integración con formularios de Angular.
 
-## Proxección de contido multiliña
+### Proxección de contido multiliña
 
 Como deberíamos facer para facer a proxección non só do input, senón tamén do icono? Podemos sleccionar varios tipos de contido.
 
